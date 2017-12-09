@@ -3,10 +3,11 @@
   "version": "0.0.1",
   "description": "A GUI wrapper for the nvd-cli project",
   "main": "main.js",
-  "dependencies": {},
-  "devDependencies": {},
+  "devDependencies": {
+    "electron": "~1.7.8"
+  },
   "scripts": {
-    "test": "electron ."
+    "start": "electron ."
   },
   "repository": {
     "type": "git",
