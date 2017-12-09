@@ -1,22 +1,30 @@
 {
-  "name": "electron-quick-start",
-  "version": "1.0.0",
-  "description": "A minimal Electron application",
+  "name": "nvd-electron",
+  "version": "0.0.1",
+  "description": "A GUI wrapper for the nvd-cli project",
   "main": "main.js",
+  "dependencies": {},
+  "devDependencies": {},
   "scripts": {
-    "start": "electron ."
+    "test": "electron ."
   },
-  "repository": "https://github.com/electron/electron-quick-start",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/LilithTundrus/nvd-electron.git"
+  },
   "keywords": [
-    "Electron",
-    "quick",
-    "start",
-    "tutorial",
-    "demo"
+    "nvd",
+    "cli",
+    "gui",
+    "wrapper",
+    "electron",
+    "reporting",
+    "vulnerabilaties"
   ],
-  "author": "GitHub",
-  "license": "CC0-1.0",
-  "devDependencies": {
-    "electron": "~1.7.8"
-  }
+  "author": "Lilith Tundrus",
+  "license": "GPL-3.0",
+  "bugs": {
+    "url": "https://github.com/LilithTundrus/nvd-electron/issues"
+  },
+  "homepage": "https://github.com/LilithTundrus/nvd-electron#readme"
 }
