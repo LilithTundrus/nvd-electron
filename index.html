@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="UTF-8">
+  <title>NVD GUI 0.0.1</title>
+</head>
+
+<body>
+  <h1>NVD GUI 0.0.1</h1>
+  <!-- All of the Node.js APIs are available in this renderer process. -->
+  We are using Node.js
+  <script>document.write(process.versions.node)</script>, Chromium
+  <script>document.write(process.versions.chrome)</script>, and Electron
+  <script>document.write(process.versions.electron)</script>.
+
+  <form action="/action_page.js">
+    <input type="radio" name="executeType" value="full" checked> Full
+    <br>
+    <input type="radio" name="executeType" value="recent"> Recent
+    <br>
+    <input type="radio" name="executeType" value="search"> Search        Search Term:
+    <input type="text" name="searchTerm" value="search_term">
+    <br>
+    <br> Year to Search:
+    <br>
+    <input type="text" name="searchYear" value="year_to_search">
+    <br>
+    <br>
+    Options:
+    <br>
+    <input type="text" name="outputLocation" value="outputLocatin"> Custom output output <input type="button" name="Browse" value="Browse">
+    <br>
+    <input type="submit" value="Generate report">
+    <br>
+    <br>
+
+
+  </form>
+
+
+  <script>
+    // You can also require other files to run in this process
+    require('./renderer.js')
+  </script>
+</body>
+
+</html>
