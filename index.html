@@ -14,22 +14,31 @@
   <script>document.write(process.versions.chrome)</script>, and Electron
   <script>document.write(process.versions.electron)</script>.
 
-  <form action="/action_page.js">
+  <form id="main" action="/action_page.js">
     <input type="radio" name="executeType" value="full" checked> Full
     <br>
     <input type="radio" name="executeType" value="recent"> Recent
     <br>
-    <input type="radio" name="executeType" value="search"> Search        Search Term:
-    <input type="text" name="searchTerm" value="search_term">
+    <input type="radio" name="executeType" value="search" onclick="document.getElementById('searchTerm').disabled='false'"> Search
+    <br> Search Term:
+    <input type="text" id="searchTerm" name="searchTerm" value="search_term" disabled="disabled">
     <br>
     <br> Year to Search:
     <br>
     <input type="text" name="searchYear" value="year_to_search">
     <br>
     <br>
-    Options:
+    <h2>Options:</h2>
+    <input type="checkbox" name="writeReportToDisk" value="Write report to file..."> Custom output Location${outputLocation here}
+    <input type="button" name="Browse" value="Browse">
     <br>
-    <input type="text" name="outputLocation" value="outputLocatin"> Custom output output <input type="button" name="Browse" value="Browse">
+    <br> Type of file to output to Location
+    <br>
+    <input type="radio" name="outputType" value="PDF"> PDF
+    <br>
+    <input type="radio" name="outputType" value="TXT"> TXT
+    <br>
+
     <br>
     <input type="submit" value="Generate report">
     <br>
@@ -39,7 +48,17 @@
 
   <script>
     // You can also require other files to run in this process
-    require('./renderer.js')
+    require('./renderer.js');
+    var form = document.forms['main'];
+    form.executeType[2].onclick = function () {
+      form.searchTerm.disabled = false;
+    }
+    form.executeType[1].onclick = function () {
+      form.searchTerm.disabled = true;
+    }
+    form.executeType[0].onclick = function () {
+      form.searchTerm.disabled = true;
+    }
   </script>
 </body>
 
