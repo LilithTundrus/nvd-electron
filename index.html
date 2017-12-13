@@ -14,7 +14,8 @@
   <script>document.write(process.versions.chrome)</script>, and Electron
   <script>document.write(process.versions.electron)</script>.
 
-  <form id="main" action="/action_page.js">
+  <form id="main" action="./action_page.js">
+    <h3>Search Type:</h3>
     <input type="radio" name="executeType" value="full" checked> Full
     <br>
     <input type="radio" name="executeType" value="recent"> Recent
@@ -23,12 +24,14 @@
     <br> Search Term:
     <input type="text" id="searchTerm" name="searchTerm" value="search_term" disabled="disabled">
     <br>
-    <br> Year to Search:
+    <div id="searchArea" name="searchArea" hidden="true">
+      <br> Year to Search:
+      <br>
+      <input type="text" name="searchYear" value="year_to_search">
+      <br>
+    </div>
     <br>
-    <input type="text" name="searchYear" value="year_to_search">
-    <br>
-    <br>
-    <h2>Options:</h2>
+    <h3>Options:</h3>
     <input type="checkbox" name="writeReportToDisk" value="Write report to file..."> Custom output Location${outputLocation here}
     <input type="button" name="Browse" value="Browse">
     <br>
@@ -38,12 +41,10 @@
     <br>
     <input type="radio" name="outputType" value="TXT"> TXT
     <br>
-
     <br>
     <input type="submit" value="Generate report">
     <br>
     <br>
-
   </form>
 
   <script>
@@ -52,12 +53,15 @@
     var form = document.forms['main'];
     form.executeType[2].onclick = function () {
       form.searchTerm.disabled = false;
+      document.getElementById("searchArea").hidden = false
     }
     form.executeType[1].onclick = function () {
       form.searchTerm.disabled = true;
+      document.getElementById("searchArea").hidden = true
     }
     form.executeType[0].onclick = function () {
       form.searchTerm.disabled = true;
+      document.getElementById("searchArea").hidden = true
     }
   </script>
 </body>
