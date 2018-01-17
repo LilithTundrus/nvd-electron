@@ -24,13 +24,9 @@ TODO: Allow for vulerability severity arg (IE Ignore 'LOW' scoring entries that 
 TODO: for recents, ensure that the CVE review is FINAL?
 TODO: add params for every function that needs them
 TODO: fix the global JSON data issue that really shouldn't be there
-TODO: make this usable as an NPM command line util! (kind of like node-mailer CLI)
-TODO: allow for better help args handling
 TODO: make the NVDCheckFull/Recent one funtion (it's doable!)
 TODO: add more of the NVD data to the objects in parseNVDData
-TODO: combine the long and shorthand for each command/arg/flag type
 TODO: validate checklist type passed to script is .json
-TODO: allow for a recent search
 */
 
 function capitalizeFirstLetter(string) {                            // used to clean up some of the NVD names for products
