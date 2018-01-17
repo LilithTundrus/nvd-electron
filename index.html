@@ -30,16 +30,19 @@
       <input type="text" name="searchYear" value="year_to_search">
       <br>
     </div>
-    <div id="yearSelectArea" name="YearSelectArea" hidden="true">
+    <div id="yearSelectAreaForFull" name="YearSelectAreaForFull" hidden="true">
       <br> Year to Search:
       <br>
-      <input type="text" name="searchYear" value="year_to_search">
+      <input type="text" name="searchYearForFull" value="year_to_search">
       <br>
     </div>
     <br>
     <h3>Options:</h3>
     <input type="checkbox" name="writeReportToDisk" value="Write report to file..."> Custom output Location${outputLocation here}
-    <input type="button" name="Browse" value="Browse">
+    <input type="button" name="BrowseReportLocation" value="Browse">
+    <br>
+    <input type="checkbox" name="customChecklist" value="Get custom checklist"> Custom checklist JSON file
+    <input type="button" name="BrowseChecklistLocation" value="Browse">
     <br>
     <br> Type of file to output to Location
     <br>
@@ -57,26 +60,37 @@
     // You can also require other files to run in this process
     require('./renderer.js');
     var form = document.forms['main'];
+    // Modify our form option hide/showing of elements depending on what's selected
     form.executeType[2].onclick = function () {
       form.searchTerm.disabled = false;
-      document.getElementById("searchArea").hidden = false
+      document.getElementById("searchArea").hidden = false;
+      form.customChecklist.disabled = true;
+      form.BrowseChecklistLocation.disabled = true;
+
     }
     form.executeType[1].onclick = function () {
       form.searchTerm.disabled = true;
       document.getElementById("searchArea").hidden = true
+      form.customChecklist.disabled = false;
+      form.BrowseChecklistLocation.disabled = false;
+
     }
     form.executeType[0].onclick = function () {
       form.searchTerm.disabled = true;
-      document.getElementById("searchArea").hidden = true
+      document.getElementById("searchArea").hidden = true;
+      form.customChecklist.disabled = false;
+      form.BrowseChecklistLocation.disabled = false;
     }
 
     function processForm(e) {
       if (e.preventDefault) e.preventDefault();
-
-      /* do what you want with the form */
       // collect all of the current form values
       console.log(form.executeType.value);
       console.log(form.outputType)
+      if (form.executeType.value == 'search') {
+        console.log(form.searchTerm.value)
+        console.log(form.searchYear.value)
+      }
 
       // You must return false to prevent the default form behavior
       return false;
