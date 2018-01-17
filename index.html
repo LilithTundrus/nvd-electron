@@ -57,8 +57,18 @@
   </form>
 
   <script>
+    // TODO: Get the buttons working
+    // TODO: get the form submit button to actually return something
+
     // You can also require other files to run in this process
     require('./renderer.js');
+    let test = require('./nvd-exports.js');
+    alert(test.sayHi())
+
+
+    //Since the default search radio button select is full, show the elements needed on start
+    document.getElementById("yearSelectAreaForFull").hidden = false;
+
     var form = document.forms['main'];
     // Modify our form option hide/showing of elements depending on what's selected
     form.executeType[2].onclick = function () {
@@ -71,28 +81,29 @@
       form.searchTerm.disabled = true;
       document.getElementById("searchArea").hidden = true;
       document.getElementById("yearSelectAreaForFull").hidden = true;
-
       enableChecklistOption();
     }
     form.executeType[0].onclick = function () {
       form.searchTerm.disabled = true;
       document.getElementById("searchArea").hidden = true;
       document.getElementById("yearSelectAreaForFull").hidden = false;
-
       enableChecklistOption();
     }
 
+    // process the form locally
     function processForm(e) {
       if (e.preventDefault) e.preventDefault();
       // collect all of the current form values
       console.log(form.executeType.value);
-      console.log(form.outputType)
+      console.log(form.outputType.value);
       if (form.executeType.value == 'search') {
-        console.log(form.searchTerm.value)
-        console.log(form.searchYear.value)
+        console.log(form.searchTerm.value);
+        console.log(form.searchYear.value);
+      } else if (form.executeType.value == 'full') {
+        console.log(form.searchYearForFull.value);
       }
-      // You must return false to prevent the default form behavior
-      return false;
+        // You must return false to prevent the default form behavior
+        return false;
     }
 
     function disableChecklistOption() {
