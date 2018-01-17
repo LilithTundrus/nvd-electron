@@ -64,16 +64,21 @@
     form.executeType[2].onclick = function () {
       form.searchTerm.disabled = false;
       document.getElementById("searchArea").hidden = false;
+      document.getElementById("yearSelectAreaForFull").hidden = true;
       disableChecklistOption();
     }
     form.executeType[1].onclick = function () {
       form.searchTerm.disabled = true;
-      document.getElementById("searchArea").hidden = true
+      document.getElementById("searchArea").hidden = true;
+      document.getElementById("yearSelectAreaForFull").hidden = true;
+
       enableChecklistOption();
     }
     form.executeType[0].onclick = function () {
       form.searchTerm.disabled = true;
       document.getElementById("searchArea").hidden = true;
+      document.getElementById("yearSelectAreaForFull").hidden = false;
+
       enableChecklistOption();
     }
 
