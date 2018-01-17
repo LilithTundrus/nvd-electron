@@ -27,6 +27,7 @@ TODO: fix the global JSON data issue that really shouldn't be there
 TODO: make the NVDCheckFull/Recent one funtion (it's doable!)
 TODO: add more of the NVD data to the objects in parseNVDData
 TODO: validate checklist type passed to script is .json
+TODO: DELETE the temporary files after each run
 */
 
 function capitalizeFirstLetter(string) {                            // used to clean up some of the NVD names for products
