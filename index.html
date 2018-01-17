@@ -14,7 +14,7 @@
   <script>document.write(process.versions.chrome)</script>, and Electron
   <script>document.write(process.versions.electron)</script>.
 
-  <form id="main" action="./action_page.js">
+  <form id="main">
     <h3>Search Type:</h3>
     <input type="radio" name="executeType" value="full" checked> Full
     <br>
@@ -22,9 +22,9 @@
     <br>
     <input type="radio" name="executeType" value="search" onclick="document.getElementById('searchTerm').disabled='false'"> Search
     <div id="searchArea" name="searchArea" hidden="true">
-        <br> Search Term:
-        <input type="text" id="searchTerm" name="searchTerm" value="search_term" disabled="disabled">
-        <br>
+      <br> Search Term:
+      <input type="text" id="searchTerm" name="searchTerm" value="search_term" disabled="disabled">
+      <br>
       <br> Year to Search:
       <br>
       <input type="text" name="searchYear" value="year_to_search">
@@ -48,7 +48,7 @@
     <input type="radio" name="outputType" value="TXT"> TXT
     <br>
     <br>
-    <input type="button" value="Generate report" onclick="return generationHandler()">
+    <input type="submit" value="Generate report">
     <br>
     <br>
   </form>
@@ -69,9 +69,23 @@
       form.searchTerm.disabled = true;
       document.getElementById("searchArea").hidden = true
     }
-    
-    function generationHandler() {
-      alert('test')
+
+    function processForm(e) {
+      if (e.preventDefault) e.preventDefault();
+
+      /* do what you want with the form */
+      // collect all of the current form values
+      console.log(form.executeType.value);
+      console.log(form.outputType)
+
+      // You must return false to prevent the default form behavior
+      return false;
+    }
+
+    if (form.attachEvent) {
+      form.attachEvent("submit", processForm);
+    } else {
+      form.addEventListener("submit", processForm);
     }
   </script>
 </body>
