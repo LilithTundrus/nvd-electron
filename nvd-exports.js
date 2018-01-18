@@ -1,7 +1,6 @@
 /* 
     This is where we are going to turn the nvd-cli code into a module.exports
     API
-
 */
 
 'use strict';
@@ -17,11 +16,14 @@ const ver = '0.5.0';                                            // arbitrary ver
 
 var globalNVDJSON;
 
-module.exports.getArgs = function (optsObj) {
+module.exports.executeNVDCheck = function (optsObj) {
     // deconstruct the obj here
+    if (optsObj.executeType == 'search') {
+        productSearchHandler(2018, 'jenkins', './', '.pdf', 'test')
+    }
     return console.log(optsObj);
 }
- 
+
 // NON-PUBLIC functions
 
 function capitalizeFirstLetter(string) {                            // used to clean up some of the NVD names for products
