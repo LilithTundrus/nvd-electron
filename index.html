@@ -27,13 +27,33 @@
       <br>
       <br> Year to Search:
       <br>
-      <input type="text" name="searchYear" value="year_to_search">
+      <select name="yearSelectDropDownSearch">
+        <option value="2018">2018</option>
+        <option value="20187">2017</option>
+        <option value="2016">2016</option>
+        <option value="2015">2015</option>
+        <option value="2014">2014</option>
+        <option value="2013">2013</option>
+        <option value="2012">2012</option>
+        <option value="2011">2011</option>
+        <option value="2010">2010</option>
+      </select>
       <br>
     </div>
     <div id="yearSelectAreaForFull" name="YearSelectAreaForFull" hidden="true">
       <br> Year to Search:
       <br>
-      <input type="text" name="searchYearForFull" value="year_to_search">
+      <select name="yearSelectDropDownFull">
+        <option value="2018">2018</option>
+        <option value="20187">2017</option>
+        <option value="2016">2016</option>
+        <option value="2015">2015</option>
+        <option value="2014">2014</option>
+        <option value="2013">2013</option>
+        <option value="2012">2012</option>
+        <option value="2011">2011</option>
+        <option value="2010">2010</option>
+      </select>
       <br>
     </div>
     <br>
@@ -59,12 +79,12 @@
   <script>
     // TODO: Get the buttons working
     // TODO: get the form submit button to actually return something
+    // For the custom JSON/vs textbox entry we need to have one text box each for
+    // product name and/or manufacturer name instead of requiring a checklist
 
     // You can also require other files to run in this process
     require('./renderer.js');
-    let test = require('./nvd-exports.js');
-    alert(test.sayHi())
-
+    let nvd = require('./nvd-exports.js');
 
     //Since the default search radio button select is full, show the elements needed on start
     document.getElementById("yearSelectAreaForFull").hidden = false;
@@ -93,17 +113,22 @@
     // process the form locally
     function processForm(e) {
       if (e.preventDefault) e.preventDefault();
+      let argsObj = {};
       // collect all of the current form values
-      console.log(form.executeType.value);
-      console.log(form.outputType.value);
+      argsObj.executeType = form.executeType.value;
+      argsObj.outputType = form.outputType.value;
       if (form.executeType.value == 'search') {
-        console.log(form.searchTerm.value);
-        console.log(form.searchYear.value);
+        argsObj.searchTerm = form.searchTerm.value;
+        argsObj.searchYear = form.yearSelectDropDownSearch.value;
       } else if (form.executeType.value == 'full') {
-        console.log(form.searchYearForFull.value);
+        // use the same searchYear opt as above because we already know the execute type
+        // and don't need to worry
+        argsObj.searchYear = form.yearSelectDropDownFull.value;
       }
-        // You must return false to prevent the default form behavior
-        return false;
+      nvd.getArgs(argsObj);
+      // return all of the info to nvd-exports
+      // You must return false to prevent the default form behavior
+      return false;
     }
 
     function disableChecklistOption() {
