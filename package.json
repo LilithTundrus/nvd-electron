@@ -30,6 +30,7 @@
   "homepage": "https://github.com/LilithTundrus/nvd-electron#readme",
   "dependencies": {
     "child-process-promise": "^2.2.1",
+    "electron-pdf-window": "^1.0.12",
     "extract-zip": "^1.6.6",
     "pdfkit": "^0.8.3"
   }
