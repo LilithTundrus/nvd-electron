@@ -1,19 +1,12 @@
 <!DOCTYPE html>
 <html>
-
 <head>
   <meta charset="UTF-8">
   <title>NVD GUI 0.0.1</title>
 </head>
-
 <body>
-  <h1>NVD GUI 0.0.1</h1>
+  <h1>NVD GUI 0.0.2</h1>
   <!-- All of the Node.js APIs are available in this renderer process. -->
-  We are using Node.js
-  <script>document.write(process.versions.node)</script>, Chromium
-  <script>document.write(process.versions.chrome)</script>, and Electron
-  <script>document.write(process.versions.electron)</script>.
-
   <form id="main">
     <h3>Search Type:</h3>
     <input type="radio" name="executeType" value="full" checked> Full
@@ -23,13 +16,14 @@
     <input type="radio" name="executeType" value="search" onclick="document.getElementById('searchTerm').disabled='false'"> Search
     <div id="searchArea" name="searchArea" hidden="true">
       <br> Search Term:
+      <br>
       <input type="text" id="searchTerm" name="searchTerm" value="search_term" disabled="disabled">
       <br>
       <br> Year to Search:
       <br>
       <select name="yearSelectDropDownSearch">
         <option value="2018">2018</option>
-        <option value="20187">2017</option>
+        <option value="2017">2017</option>
         <option value="2016">2016</option>
         <option value="2015">2015</option>
         <option value="2014">2014</option>
@@ -39,13 +33,19 @@
         <option value="2010">2010</option>
       </select>
       <br>
+      <br>
+      Search by Product name/Vendor name
+      <br>
+      <input type="radio" name="searchType" value="Product" checked> Product
+      <br>
+      <input type="radio" name="searchType" value="Vendor"> Vendor
     </div>
     <div id="yearSelectAreaForFull" name="YearSelectAreaForFull" hidden="true">
       <br> Year to Search:
       <br>
       <select name="yearSelectDropDownFull">
         <option value="2018">2018</option>
-        <option value="20187">2017</option>
+        <option value="2017">2017</option>
         <option value="2016">2016</option>
         <option value="2015">2015</option>
         <option value="2014">2014</option>
@@ -125,7 +125,7 @@
         // and don't need to worry
         argsObj.searchYear = form.yearSelectDropDownFull.value;
       }
-      nvd.getArgs(argsObj);
+      nvd.executeNVDCheck(argsObj)
       // return all of the info to nvd-exports
       // You must return false to prevent the default form behavior
       return false;
