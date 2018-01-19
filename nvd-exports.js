@@ -4,6 +4,7 @@
 */
 'use strict';
 const fs = require('fs');                                       // for reading the JSON file
+const path = require('path');
 var extract = require('extract-zip');
 const util = require('util');                                   // for using child-process
 const PDFDocument = require('pdfkit');
@@ -12,6 +13,7 @@ const config = require('./config.js');                          // config file f
 const NVDClass = require('./NVDJSONClass.js');                  // helper for getting at NVD Data for specific years
 const debug = config.debug;                                     // used to allow/disallow verbose logging
 const ver = '0.5.0';                                            // arbitrary version number, should match NPM version
+const tempFileDir = `${process.cwd()}/temp`;
 
 var globalNVDJSON;
 
@@ -19,17 +21,19 @@ module.exports.executeNVDCheck = function (optsObj) {
     console.log(optsObj);
     let searchYear = optsObj.searchYear;
     let outputType = optsObj.outputType;
-    if (optsObj.executeType == 'search') {
+    if (optsObj.executeType == 'full') {
         //we know all of the search props will be provided
         if (optsObj.searchType == 'product') {
             return productSearchHandler(searchYear, optsObj.searchTerm, './', '.pdf', 'test')
         } else if (optsObj.searchType == 'vendor') {
             return vendorSearchHanlder(searchYear, optsObj.searchTerm, './', '.pdf', 'test')
         }
-    } else if (optsObj.executeType == 'full') {
-        console.log(`Not ready yet!`);
     } else if (optsObj.executeType == 'recent') {
-        console.log(`Not ready yet!`);
+        if (optsObj.searchType == 'product') {
+            return productSearchHandler('recent', optsObj.searchTerm, './', '.pdf', 'test')
+        } else if (optsObj.searchType == 'vendor') {
+            return vendorSearchHanlder('recent', optsObj.searchTerm, './', '.pdf', 'test')
+        }
     }
 }
 
@@ -54,7 +58,7 @@ function getNVDZipFile(url, fileLocation) {
 // this is a hacky solution.
 function extractZipFile(fileNameToExtract) {
     return new Promise((resolve, reject) => {
-        return extract(fileNameToExtract, { dir: process.cwd() }, function (err) {
+        return extract(fileNameToExtract, { dir: tempFileDir }, function (err) {
             return resolve(err);
         });
     });
@@ -69,7 +73,7 @@ function productSearchHandler(yearToSearch, productSearchQuery, outputLocation, 
     } else {
         console.log(`Searching NVD year ${yearToSearch} for ${productSearchQuery}`);
         let NVDFileData = new NVDClass(yearToSearch);                   // generate the new NVDData references to work with
-        return Promise.resolve()                                               // start the promise chain as resolved to avoid issues
+        return Promise.resolve()                                        // start the promise chain as resolved to avoid issues
             .then(() => getNVDZipFile(NVDFileData.NVDURL, NVDFileData.zipFileLocation))
             .then(() => extractZipFile(NVDFileData.zipFileLocation))
             .then(() => {
@@ -131,17 +135,6 @@ function vendorSearchHanlder(yearToSearch, vendorSearchQuery, outputLocation, ou
             .catch((err) => {
                 console.log(`Ended with error at ${new Date().toISOString()}: ${err}`);
             })
-    }
-}
-
-function NVDYearValidator(yearToValidate) {
-    if (typeof (yearToValidate) !== 'number') {
-        return false;
-    } else {
-        if (isNaN(yearToValidate) || yearToValidate.toString().charAt(0) !== '2' || yearToValidate.toString().charAt(1) !== '0' || yearToValidate.length < 4 || yearToValidate.length > 4 || yearToValidate < 2003) {
-            return false;
-        }
-        return true;
     }
 }
 
@@ -469,4 +462,15 @@ function NVDCheckRecent(outputLocation, outputFormat, checklistLocation, outputN
 
 function cleanTempFolder() {
     // Clean the temporary folder on every PDF generation execute here
+    const directory = 'temp';
+
+    fs.readdir(directory, (err, files) => {
+        if (err) throw err;
+
+        for (const file of files) {
+            fs.unlink(path.join(directory, file), err => {
+                if (err) throw err;
+            });
+        }
+    });
 }
