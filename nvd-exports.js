@@ -1,7 +1,3 @@
-/* 
-    This is where we are going to turn the nvd-cli code into a module.exports
-    API
-*/
 'use strict';
 const fs = require('fs');                                       // for reading the JSON file
 const path = require('path');
@@ -470,12 +466,10 @@ function NVDCheckRecent(outputLocation, outputFormat, checklistLocation, outputN
 
 function cleanTempFolder() {
     // Clean the temporary folder on every PDF generation execute here
-    const directory = 'temp';
-
-    fs.readdir(directory, (err, files) => {
+    fs.readdir(tempFileDir, (err, files) => {
         if (err) throw err;
         for (const file of files) {
-            fs.unlink(path.join(directory, file), err => {
+            fs.unlink(path.join(tempFileDir, file), err => {
                 if (err) throw err;
             });
         }
