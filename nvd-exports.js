@@ -2,7 +2,6 @@
     This is where we are going to turn the nvd-cli code into a module.exports
     API
 */
-
 'use strict';
 const fs = require('fs');                                       // for reading the JSON file
 var extract = require('extract-zip');
@@ -17,11 +16,11 @@ const ver = '0.5.0';                                            // arbitrary ver
 var globalNVDJSON;
 
 module.exports.executeNVDCheck = function (optsObj) {
-    // deconstruct the obj here
+    console.log(optsObj);
     if (optsObj.executeType == 'search') {
-        productSearchHandler(2018, 'jenkins', './', '.pdf', 'test')
+        //we know all of the search props will be provided
+        return productSearchHandler(2018, 'windows', './', '.pdf', 'test')
     }
-    return console.log(optsObj);
 }
 
 // NON-PUBLIC functions
@@ -455,4 +454,9 @@ function NVDCheckRecent(outputLocation, outputFormat, checklistLocation, outputN
         .catch((err) => {
             console.log(`Ended with error at ${new Date().toISOString()}: ${err}`);
         })
+}
+
+
+function cleanTempFolder() {
+    // Clean the temporary folder on every PDF generation execute here
 }
