@@ -47,7 +47,7 @@
       <input type="radio" name="searchType" value="vendor"> Vendor
       <br>
       <h3>Search Term:</h3>
-      <input type="text" id="searchTerm" name="searchTerm" value="search_term">
+      <input type="text" id="searchTermFull" name="searchTermFull" value="search_term">
       <br>
     </div>
     <br>
@@ -102,14 +102,15 @@
       // collect all of the current form values
       argsObj.executeType = form.executeType.value;
       argsObj.outputType = form.outputType.value;
-      if (form.executeType.value == 'search') {
+      if (form.executeType.value == 'recent') {
         argsObj.searchTerm = form.searchTerm.value;
-        argsObj.searchYear = form.yearSelectDropDownSearch.value;
         argsObj.searchType = form.searchType.value;
       } else if (form.executeType.value == 'full') {
         // use the same searchYear opt as above because we already know the execute type
         // and don't need to worry
         argsObj.searchYear = form.yearSelectDropDownFull.value;
+        argsObj.searchTerm = form.searchTermFull.value;
+        argsObj.searchType = form.searchType.value;
       }
       nvd.executeNVDCheck(argsObj)
       // return all of the info to nvd-exports
