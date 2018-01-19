@@ -45,7 +45,6 @@
     <h3>Search Term:</h3>
     <input type="text" id="searchTerm" name="searchTerm" value="search_term">
     <br>
-    <br>
     <h3>Options:</h3>
     <input type="checkbox" name="writeReportToDisk" value="Write report to file..."> Custom output Location${outputLocation here}
     <input type="button" name="BrowseReportLocation" value="Browse">
@@ -66,12 +65,12 @@
 
   <script>
     // TODO: Get the buttons working
-    // TODO: get the form submit button to actually return something
-    // For the custom JSON/vs textbox entry we need to have one text box each for
-    // product name and/or manufacturer name instead of requiring a checklist
+    // TODO: Show the user the report on completetion
 
     // You can also require other files to run in this process
     require('./renderer.js');
+    const { BrowserWindow } = require('electron').remote;
+    const PDFWindow = require('electron-pdf-window');
     let nvd = require('./nvd-exports.js');
 
     // Since the default search radio button select is full, show the elements needed on start
@@ -108,7 +107,15 @@
         argsObj.searchType = form.searchType.value;
       }
       nvd.executeNVDCheck(argsObj)
-      // return all of the info to nvd-exports
+        .then(() => {
+          // open the generated PDF/TXT file
+          const win = new BrowserWindow({ width: 800, height: 600 })
+
+          PDFWindow.addSupport(win)
+          console.log(process.cwd())
+          win.loadURL(`${process.cwd()}/test.pdf`)
+        })
+      // return all of the info to nvd-exports here!
       // You must return false to prevent the default form behavior
       return false;
     }
