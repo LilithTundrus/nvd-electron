@@ -17,14 +17,19 @@ var globalNVDJSON;
 
 module.exports.executeNVDCheck = function (optsObj) {
     console.log(optsObj);
+    let searchYear = optsObj.searchYear;
+    let outputType = optsObj.outputType;
     if (optsObj.executeType == 'search') {
         //we know all of the search props will be provided
         if (optsObj.searchType == 'product') {
-            return productSearchHandler(optsObj.searchYear, optsObj.searchTerm, './', '.pdf', 'test')
+            return productSearchHandler(searchYear, optsObj.searchTerm, './', '.pdf', 'test')
         } else if (optsObj.searchType == 'vendor') {
-            return vendorSearchHanlder(optsObj.searchYear, optsObj.searchTerm, './', '.pdf', 'test')
+            return vendorSearchHanlder(searchYear, optsObj.searchTerm, './', '.pdf', 'test')
         }
-
+    } else if (optsObj.executeType == 'full') {
+        console.log(`Not ready yet!`);
+    } else if (optsObj.executeType == 'recent') {
+        console.log(`Not ready yet!`);
     }
 }
 
