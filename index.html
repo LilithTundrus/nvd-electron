@@ -3,7 +3,7 @@
 
 <head>
   <meta charset="UTF-8">
-  <title>NVD GUI 0.0.1</title>
+  <title>NVD GUI 0.0.2</title>
 </head>
 
 <body>
@@ -21,10 +21,6 @@
       <input type="radio" name="searchType" value="product" checked> Product
       <br>
       <input type="radio" name="searchType" value="vendor"> Vendor
-      <br>
-      <h3>Search Term:</h3>
-      <input type="text" id="searchTerm" name="searchTerm" value="search_term">
-      <br>
     </div>
     <div id="yearSelectAreaForFull" name="YearSelectAreaForFull" hidden="true">
       <br>
@@ -40,16 +36,15 @@
         <option value="2011">2011</option>
         <option value="2010">2010</option>
       </select>
-      <br>
       <h3>Search by Product name/Vendor name:</h3>
       <input type="radio" name="searchType" value="product" checked> Product
       <br>
       <input type="radio" name="searchType" value="vendor"> Vendor
-      <br>
-      <h3>Search Term:</h3>
-      <input type="text" id="searchTermFull" name="searchTermFull" value="search_term">
-      <br>
     </div>
+    <br>
+    <h3>Search Term:</h3>
+    <input type="text" id="searchTerm" name="searchTerm" value="search_term">
+    <br>
     <br>
     <h3>Options:</h3>
     <input type="checkbox" name="writeReportToDisk" value="Write report to file..."> Custom output Location${outputLocation here}
@@ -109,7 +104,7 @@
         // use the same searchYear opt as above because we already know the execute type
         // and don't need to worry
         argsObj.searchYear = form.yearSelectDropDownFull.value;
-        argsObj.searchTerm = form.searchTermFull.value;
+        argsObj.searchTerm = form.searchTerm.value;
         argsObj.searchType = form.searchType.value;
       }
       nvd.executeNVDCheck(argsObj)
