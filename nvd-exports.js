@@ -19,7 +19,12 @@ module.exports.executeNVDCheck = function (optsObj) {
     console.log(optsObj);
     if (optsObj.executeType == 'search') {
         //we know all of the search props will be provided
-        return productSearchHandler(2018, 'windows', './', '.pdf', 'test')
+        if (optsObj.searchType == 'product') {
+            return productSearchHandler(optsObj.searchYear, optsObj.searchTerm, './', '.pdf', 'test')
+        } else if (optsObj.searchType == 'vendor') {
+            return vendorSearchHanlder(optsObj.searchYear, optsObj.searchTerm, './', '.pdf', 'test')
+        }
+
     }
 }
 
