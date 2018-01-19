@@ -15,11 +15,21 @@
     <br>
     <input type="radio" name="executeType" value="recent"> Recent
     <br>
-    <input type="radio" name="executeType" value="search"> Search
-    <div id="searchArea" name="searchArea" hidden="true">
+    <div id="searchAreaRecent" name="searchAreaRecent" hidden="true">
+      <br>
+      <h3>Search by Product name/Vendor name:</h3>
+      <input type="radio" name="searchType" value="product" checked> Product
+      <br>
+      <input type="radio" name="searchType" value="vendor"> Vendor
+      <br>
+      <h3>Search Term:</h3>
+      <input type="text" id="searchTerm" name="searchTerm" value="search_term">
+      <br>
+    </div>
+    <div id="yearSelectAreaForFull" name="YearSelectAreaForFull" hidden="true">
       <br>
       <h3>Year to Search:</h3>
-      <select name="yearSelectDropDownSearch">
+      <select name="yearSelectDropDownFull">
         <option value="2018">2018</option>
         <option value="2017">2017</option>
         <option value="2016">2016</option>
@@ -38,22 +48,6 @@
       <br>
       <h3>Search Term:</h3>
       <input type="text" id="searchTerm" name="searchTerm" value="search_term">
-      <br>
-    </div>
-    <div id="yearSelectAreaForFull" name="YearSelectAreaForFull" hidden="true">
-      <br>
-       <h3>Year to Search:</h3>
-      <select name="yearSelectDropDownFull">
-        <option value="2018">2018</option>
-        <option value="2017">2017</option>
-        <option value="2016">2016</option>
-        <option value="2015">2015</option>
-        <option value="2014">2014</option>
-        <option value="2013">2013</option>
-        <option value="2012">2012</option>
-        <option value="2011">2011</option>
-        <option value="2010">2010</option>
-      </select>
       <br>
     </div>
     <br>
@@ -90,19 +84,14 @@
 
     var form = document.forms['main'];
     // Modify our form option hide/showing of elements depending on what's selected
-    form.executeType[2].onclick = function () {
-      document.getElementById("searchArea").hidden = false;
-      document.getElementById("yearSelectAreaForFull").hidden = true;
-      disableChecklistOption();
-    }
-    form.executeType[1].onclick = function () {
-      document.getElementById("searchArea").hidden = true;
-      document.getElementById("yearSelectAreaForFull").hidden = true;
+    form.executeType[0].onclick = function () {
+      document.getElementById("searchAreaRecent").hidden = true;
+      document.getElementById("yearSelectAreaForFull").hidden = false;
       enableChecklistOption();
     }
-    form.executeType[0].onclick = function () {
-      document.getElementById("searchArea").hidden = true;
-      document.getElementById("yearSelectAreaForFull").hidden = false;
+    form.executeType[1].onclick = function () {
+      document.getElementById("searchAreaRecent").hidden = false;
+      document.getElementById("yearSelectAreaForFull").hidden = true;
       enableChecklistOption();
     }
 
@@ -145,4 +134,5 @@
     }
   </script>
 </body>
+
 </html>
