@@ -1,9 +1,11 @@
 <!DOCTYPE html>
 <html>
+
 <head>
   <meta charset="UTF-8">
   <title>NVD GUI 0.0.1</title>
 </head>
+
 <body>
   <h1>NVD GUI 0.0.2</h1>
   <!-- All of the Node.js APIs are available in this renderer process. -->
@@ -15,12 +17,8 @@
     <br>
     <input type="radio" name="executeType" value="search" onclick="document.getElementById('searchTerm').disabled='false'"> Search
     <div id="searchArea" name="searchArea" hidden="true">
-      <br> Search Term:
       <br>
-      <input type="text" id="searchTerm" name="searchTerm" value="search_term" disabled="disabled">
-      <br>
-      <br> Year to Search:
-      <br>
+      <h3>Year to Search:</h3>
       <select name="yearSelectDropDownSearch">
         <option value="2018">2018</option>
         <option value="2017">2017</option>
@@ -33,16 +31,18 @@
         <option value="2010">2010</option>
       </select>
       <br>
+      <h3>Search by Product name/Vendor name:</h3>
+      <input type="radio" name="searchType" value="product" checked> Product
       <br>
-      Search by Product name/Vendor name
+      <input type="radio" name="searchType" value="vendor"> Vendor
       <br>
-      <input type="radio" name="searchType" value="Product" checked> Product
+      <h3>Search Term:</h3>
+      <input type="text" id="searchTerm" name="searchTerm" value="search_term" disabled="disabled">
       <br>
-      <input type="radio" name="searchType" value="Vendor"> Vendor
     </div>
     <div id="yearSelectAreaForFull" name="YearSelectAreaForFull" hidden="true">
-      <br> Year to Search:
       <br>
+       <h3>Year to Search:</h3>
       <select name="yearSelectDropDownFull">
         <option value="2018">2018</option>
         <option value="2017">2017</option>
@@ -64,8 +64,7 @@
     <input type="checkbox" name="customChecklist" value="Get custom checklist"> Custom checklist JSON file
     <input type="button" name="BrowseChecklistLocation" value="Browse">
     <br>
-    <br> Type of file to output to Location
-    <br>
+    <h3>Type of file to output:</h3>
     <input type="radio" name="outputType" value="PDF" checked> PDF
     <br>
     <input type="radio" name="outputType" value="TXT"> TXT
@@ -86,7 +85,7 @@
     require('./renderer.js');
     let nvd = require('./nvd-exports.js');
 
-    //Since the default search radio button select is full, show the elements needed on start
+    // Since the default search radio button select is full, show the elements needed on start
     document.getElementById("yearSelectAreaForFull").hidden = false;
 
     var form = document.forms['main'];
@@ -120,6 +119,7 @@
       if (form.executeType.value == 'search') {
         argsObj.searchTerm = form.searchTerm.value;
         argsObj.searchYear = form.yearSelectDropDownSearch.value;
+        argsObj.searchType = form.searchType.value;
       } else if (form.executeType.value == 'full') {
         // use the same searchYear opt as above because we already know the execute type
         // and don't need to worry
@@ -148,5 +148,4 @@
     }
   </script>
 </body>
-
 </html>
