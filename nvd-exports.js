@@ -14,7 +14,6 @@ const NVDClass = require('./NVDJSONClass.js');                  // helper for ge
 const debug = config.debug;                                     // used to allow/disallow verbose logging
 const ver = '0.5.0';                                            // arbitrary version number, should match NPM version
 const tempFileDir = `${process.cwd()}/temp`;
-
 var globalNVDJSON;
 
 module.exports.executeNVDCheck = function (optsObj) {
@@ -38,7 +37,6 @@ module.exports.executeNVDCheck = function (optsObj) {
 }
 
 // NON-PUBLIC functions
-
 function capitalizeFirstLetter(string) {                            // used to clean up some of the NVD names for products
     return string.charAt(0).toUpperCase() + string.slice(1);
 }
@@ -55,7 +53,6 @@ function getNVDZipFile(url, fileLocation) {
     });
 }
 
-// this is a hacky solution.
 function extractZipFile(fileNameToExtract) {
     return new Promise((resolve, reject) => {
         return extract(fileNameToExtract, { dir: tempFileDir }, function (err) {
@@ -93,6 +90,9 @@ function productSearchHandler(yearToSearch, productSearchQuery, outputLocation, 
                 }
             })
             .then(() => {
+                return cleanTempFolder();
+            })
+            .then(() => {
                 if (debug) { console.log(`\nSuccessfully ended on ${new Date().toISOString()}`); }
             })
             .catch((err) => {
@@ -128,6 +128,9 @@ function vendorSearchHanlder(yearToSearch, vendorSearchQuery, outputLocation, ou
                 } else {
                     throw new Error('Error: Unknown output format was passed to function NVDCheckRecent');
                 }
+            })
+            .then(() => {
+                return cleanTempFolder();
             })
             .then(() => {
                 if (debug) { console.log(`\nSuccessfully ended on ${new Date().toISOString()}`); }
@@ -423,6 +426,9 @@ function NVDCheckFull(yearToSearch, outputLocation, outputFormat, checklistLocat
             }
         })
         .then(() => {
+            return cleanTempFolder();
+        })
+        .then(() => {
             if (debug) { console.log(`\nSuccessfully ended on ${new Date().toISOString()}`); }
         })
         .catch((err) => {
@@ -452,6 +458,9 @@ function NVDCheckRecent(outputLocation, outputFormat, checklistLocation, outputN
             }
         })
         .then(() => {
+            return cleanTempFolder();
+        })
+        .then(() => {
             if (debug) { console.log(`\nSuccessfully ended on ${new Date().toISOString()}`); }
         })
         .catch((err) => {
@@ -459,14 +468,12 @@ function NVDCheckRecent(outputLocation, outputFormat, checklistLocation, outputN
         })
 }
 
-
 function cleanTempFolder() {
     // Clean the temporary folder on every PDF generation execute here
     const directory = 'temp';
 
     fs.readdir(directory, (err, files) => {
         if (err) throw err;
-
         for (const file of files) {
             fs.unlink(path.join(directory, file), err => {
                 if (err) throw err;
