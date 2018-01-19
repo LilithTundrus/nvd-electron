@@ -15,7 +15,7 @@
     <br>
     <input type="radio" name="executeType" value="recent"> Recent
     <br>
-    <input type="radio" name="executeType" value="search" onclick="document.getElementById('searchTerm').disabled='false'"> Search
+    <input type="radio" name="executeType" value="search"> Search
     <div id="searchArea" name="searchArea" hidden="true">
       <br>
       <h3>Year to Search:</h3>
@@ -37,7 +37,7 @@
       <input type="radio" name="searchType" value="vendor"> Vendor
       <br>
       <h3>Search Term:</h3>
-      <input type="text" id="searchTerm" name="searchTerm" value="search_term" disabled="disabled">
+      <input type="text" id="searchTerm" name="searchTerm" value="search_term">
       <br>
     </div>
     <div id="yearSelectAreaForFull" name="YearSelectAreaForFull" hidden="true">
@@ -91,19 +91,16 @@
     var form = document.forms['main'];
     // Modify our form option hide/showing of elements depending on what's selected
     form.executeType[2].onclick = function () {
-      form.searchTerm.disabled = false;
       document.getElementById("searchArea").hidden = false;
       document.getElementById("yearSelectAreaForFull").hidden = true;
       disableChecklistOption();
     }
     form.executeType[1].onclick = function () {
-      form.searchTerm.disabled = true;
       document.getElementById("searchArea").hidden = true;
       document.getElementById("yearSelectAreaForFull").hidden = true;
       enableChecklistOption();
     }
     form.executeType[0].onclick = function () {
-      form.searchTerm.disabled = true;
       document.getElementById("searchArea").hidden = true;
       document.getElementById("yearSelectAreaForFull").hidden = false;
       enableChecklistOption();
