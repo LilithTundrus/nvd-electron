@@ -11,6 +11,8 @@ const debug = config.debug;                                     // used to allow
 const tempFileDir = `${process.cwd()}/temp`;
 var globalNVDJSON;
 
+module.exports.defaultOutputLocation = `${process.cwd()}/output.pdf`;
+
 module.exports.executeNVDCheck = function (optsObj) {
     console.log(optsObj);
     let searchYear = optsObj.searchYear;
