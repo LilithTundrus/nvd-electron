@@ -8,7 +8,6 @@ const exec = require('child-process-promise').exec;
 const config = require('./config.js');                          // config file for script
 const NVDClass = require('./NVDJSONClass.js');                  // helper for getting at NVD Data for specific years
 const debug = config.debug;                                     // used to allow/disallow verbose logging
-const ver = '0.5.0';                                            // arbitrary version number, should match NPM version
 const tempFileDir = `${process.cwd()}/temp`;
 var globalNVDJSON;
 
@@ -16,18 +15,19 @@ module.exports.executeNVDCheck = function (optsObj) {
     console.log(optsObj);
     let searchYear = optsObj.searchYear;
     let outputType = optsObj.outputType;
+    let fileType = optsObj.outputType
     if (optsObj.executeType == 'full') {
         //we know all of the search props will be provided
         if (optsObj.searchType == 'product') {
-            return productSearchHandler(searchYear, optsObj.searchTerm, './', '.pdf', 'test')
+            return productSearchHandler(searchYear, optsObj.searchTerm, './', fileType, 'test')
         } else if (optsObj.searchType == 'vendor') {
-            return vendorSearchHanlder(searchYear, optsObj.searchTerm, './', '.pdf', 'test')
+            return vendorSearchHanlder(searchYear, optsObj.searchTerm, './', fileType, 'test')
         }
     } else if (optsObj.executeType == 'recent') {
         if (optsObj.searchType == 'product') {
-            return productSearchHandler('recent', optsObj.searchTerm, './', '.pdf', 'test')
+            return productSearchHandler('recent', optsObj.searchTerm, './', fileType, 'test')
         } else if (optsObj.searchType == 'vendor') {
-            return vendorSearchHanlder('recent', optsObj.searchTerm, './', '.pdf', 'test')
+            return vendorSearchHanlder('recent', optsObj.searchTerm, './', fileType, 'test')
         }
     }
 }

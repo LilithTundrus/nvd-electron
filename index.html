@@ -53,9 +53,9 @@
     <input type="button" name="BrowseChecklistLocation" value="Browse">
     <br>
     <h3>Type of file to output:</h3>
-    <input type="radio" name="outputType" value="PDF" checked> PDF
+    <input type="radio" name="outputType" value=".pdf" checked> PDF
     <br>
-    <input type="radio" name="outputType" value="TXT"> TXT
+    <input type="radio" name="outputType" value=".txt"> TXT
     <br>
     <br>
     <input type="submit" value="Generate report">
@@ -109,11 +109,14 @@
       nvd.executeNVDCheck(argsObj)
         .then(() => {
           // open the generated PDF/TXT file
-          const win = new BrowserWindow({ width: 800, height: 600 })
-
-          PDFWindow.addSupport(win)
-          console.log(process.cwd())
-          win.loadURL(`${process.cwd()}/test.pdf`)
+          const win = new BrowserWindow({ width: 800, height: 600 });
+          PDFWindow.addSupport(win);
+          console.log(process.cwd());
+          if (form.outputType.value == '.pdf') {
+            win.loadURL(`${process.cwd()}/test.pdf`);
+          } else if (form.outputType.value == '.txt') {
+            win.loadURL(`file://${process.cwd()}/test.txt`);
+          }
         })
       // return all of the info to nvd-exports here!
       // You must return false to prevent the default form behavior
