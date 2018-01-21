@@ -93,6 +93,9 @@
 
     // process the form locally
     function processForm(e) {
+      if(form.searchTerm.value == '') {
+        return alert('Please provide a search term!')
+      }
       if (e.preventDefault) e.preventDefault();
       let argsObj = {};
       // collect all of the current form values
