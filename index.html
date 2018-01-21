@@ -3,13 +3,17 @@
 
 <head>
   <meta charset="UTF-8">
-  <title>NVD GUI 0.0.2</title>
+  <title>NVD GUI 0.0.3</title>
+  <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
 </head>
 
 <body>
-  <h1>NVD GUI 0.0.2</h1>
+  <div class="w3-container w3-teal">
+    <h1>NVD GUI 0.0.3</h1>
+  </div>
   <!-- All of the Node.js APIs are available in this renderer process. -->
-  <form id="main">
+
+  <form id="main" class="w3-container">
     <h3>Search Type:</h3>
     <input type="radio" name="executeType" value="full" checked> Full
     <br>
@@ -93,8 +97,8 @@
 
     // process the form locally
     function processForm(e) {
-      if(form.searchTerm.value == '') {
-        return alert('Please provide a search term!')
+      if (form.searchTerm.value == '' || form.searchTerm.value.length < 3) {
+        return alert('Please provide a search term with at least 3 characters')
       }
       if (e.preventDefault) e.preventDefault();
       let argsObj = {};
