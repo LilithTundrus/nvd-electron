@@ -14,19 +14,16 @@
   <!-- All of the Node.js APIs are available in this renderer process. -->
 
   <form id="main" class="w3-panel w3-white w3-card-4 w3-container w3-content w3-animate-bottom	">
-    <h2>Search Type:</h2>
-    <p>
+    <h3>Search Type:</h3>
       <input type="radio" class="w3-radio" name="executeType" value="full" checked>
       <label>Full</label>
-    </p>
-    <p>
+      <br>
       <input type="radio" class="w3-radio" name="executeType" value="recent">
       <label>Recent</label>
-    </p>
     <div id="yearSelectAreaForFull" name="YearSelectAreaForFull" hidden="true">
       <br>
-      <h2>Year to Search:</h2>
-      <select name="yearSelectDropDownFull">
+      <h3>Year to Search:</h3>
+      <select name="yearSelectDropDownFull" class="w3-select">
         <option value="2018">2018</option>
         <option value="2017">2017</option>
         <option value="2016">2016</option>
@@ -39,20 +36,20 @@
       </select>
     </div>
     <br>
-    <h2>Search Term:</h2>
+    <h3>Search Term:</h3>
     <input type="text" class="w3-input" id="searchTerm" name="searchTerm" value="search_term">
     <br>
-    <h2>Options:</h2>
-    <input type="checkbox" name="writeReportToDisk" value="Write report to file..."> Custom output Location${outputLocation here}
+    <h3>Options:</h3>
+    <input type="checkbox" class="w3-check" name="writeReportToDisk" value="Write report to file..."> Custom output Location${outputLocation here}
     <input type="button" name="BrowseReportLocation" value="Browse">
     <br>
-    <input type="checkbox" name="customChecklist" value="Get custom checklist"> Custom checklist JSON file
+    <input type="checkbox" class="w3-check" name="customChecklist" value="Get custom checklist"> Custom checklist JSON file
     <input type="button" name="BrowseChecklistLocation" value="Browse">
     <br>
-    <h2>Type of file to output:</h2>
-    <input type="radio" name="outputType" value=".pdf" checked> PDF
+    <h3>Type of file to output:</h3>
+    <input type="radio" class="w3-radio" name="outputType" value=".pdf" checked> PDF
     <br>
-    <input type="radio" name="outputType" value=".txt"> TXT
+    <input type="radio" class="w3-radio" name="outputType" value=".txt"> TXT
     <br>
     <br>
     <input type="submit" value="Generate report">
@@ -99,13 +96,11 @@
       argsObj.outputType = form.outputType.value;
       if (form.executeType.value == 'recent') {
         argsObj.searchTerm = form.searchTerm.value;
-        argsObj.searchType = form.searchType.value;
       } else if (form.executeType.value == 'full') {
         // use the same searchYear opt as above because we already know the execute type
         // and don't need to worry
         argsObj.searchYear = form.yearSelectDropDownFull.value;
         argsObj.searchTerm = form.searchTerm.value;
-        argsObj.searchType = form.searchType.value;
       }
       nvd.executeNVDCheck(argsObj)
         .then(() => {
@@ -133,7 +128,6 @@
       form.customChecklist.disabled = false;
       form.BrowseChecklistLocation.disabled = false;
     }
-
     if (form.attachEvent) {
       form.attachEvent("submit", processForm);
     } else {
