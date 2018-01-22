@@ -3,32 +3,29 @@
 
 <head>
   <meta charset="UTF-8">
-  <title>NVD GUI 0.0.3</title>
+  <title>NVD GUI 0.0.4</title>
   <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
 </head>
 
 <body>
   <div class="w3-container w3-teal">
-    <h1>NVD GUI 0.0.3</h1>
+    <h1>NVD GUI 0.0.4</h1>
   </div>
   <!-- All of the Node.js APIs are available in this renderer process. -->
 
-  <form id="main" class="w3-container">
-    <h3>Search Type:</h3>
-    <input type="radio" name="executeType" value="full" checked> Full
-    <br>
-    <input type="radio" name="executeType" value="recent"> Recent
-    <br>
-    <div id="searchAreaRecent" name="searchAreaRecent" hidden="true">
-      <br>
-      <h3>Search by Product name/Vendor name:</h3>
-      <input type="radio" name="searchType" value="product" checked> Product
-      <br>
-      <input type="radio" name="searchType" value="vendor"> Vendor
-    </div>
+  <form id="main" class="w3-panel w3-white w3-card-4 w3-container w3-content w3-animate-bottom	">
+    <h2>Search Type:</h2>
+    <p>
+      <input type="radio" class="w3-radio" name="executeType" value="full" checked>
+      <label>Full</label>
+    </p>
+    <p>
+      <input type="radio" class="w3-radio" name="executeType" value="recent">
+      <label>Recent</label>
+    </p>
     <div id="yearSelectAreaForFull" name="YearSelectAreaForFull" hidden="true">
       <br>
-      <h3>Year to Search:</h3>
+      <h2>Year to Search:</h2>
       <select name="yearSelectDropDownFull">
         <option value="2018">2018</option>
         <option value="2017">2017</option>
@@ -40,23 +37,19 @@
         <option value="2011">2011</option>
         <option value="2010">2010</option>
       </select>
-      <h3>Search by Product name/Vendor name:</h3>
-      <input type="radio" name="searchType" value="product" checked> Product
-      <br>
-      <input type="radio" name="searchType" value="vendor"> Vendor
     </div>
     <br>
-    <h3>Search Term:</h3>
-    <input type="text" id="searchTerm" name="searchTerm" value="search_term">
+    <h2>Search Term:</h2>
+    <input type="text" class="w3-input" id="searchTerm" name="searchTerm" value="search_term">
     <br>
-    <h3>Options:</h3>
+    <h2>Options:</h2>
     <input type="checkbox" name="writeReportToDisk" value="Write report to file..."> Custom output Location${outputLocation here}
     <input type="button" name="BrowseReportLocation" value="Browse">
     <br>
     <input type="checkbox" name="customChecklist" value="Get custom checklist"> Custom checklist JSON file
     <input type="button" name="BrowseChecklistLocation" value="Browse">
     <br>
-    <h3>Type of file to output:</h3>
+    <h2>Type of file to output:</h2>
     <input type="radio" name="outputType" value=".pdf" checked> PDF
     <br>
     <input type="radio" name="outputType" value=".txt"> TXT
@@ -72,6 +65,7 @@
     // TODO: Allow a custom filename/location
     // TODO: Allow for a checklist to be used
     // TODO: Add more features that make sense
+    // TODO: handle the larger PDFs sometimes freaking out
 
     // You can also require other files to run in this process
     require('./renderer.js');
@@ -85,12 +79,10 @@
     var form = document.forms['main'];
     // Modify our form option hide/showing of elements depending on what's selected
     form.executeType[0].onclick = function () {
-      document.getElementById("searchAreaRecent").hidden = true;
       document.getElementById("yearSelectAreaForFull").hidden = false;
       enableChecklistOption();
     }
     form.executeType[1].onclick = function () {
-      document.getElementById("searchAreaRecent").hidden = false;
       document.getElementById("yearSelectAreaForFull").hidden = true;
       enableChecklistOption();
     }
