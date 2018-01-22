@@ -11,6 +11,18 @@ const debug = config.debug;                                     // used to allow
 const tempFileDir = `${process.cwd()}/temp`;
 var globalNVDJSON;
 
+//TODO: remove the product vendor/product name option and
+// just have the script look for either
+
+// TODO: Allow for vulerability severity arg (IE Ignore 'LOW' scoring entries that match)
+// TODO: for recents, ensure that the CVE review is FINAL?
+// TODO: add params for every function that needs them
+// TODO: fix the global JSON data issue that really shouldn't be there
+// TODO: make the NVDCheckFull/Recent one funtion (it's doable!)
+// TODO: add more of the NVD data to the objects in parseNVDData
+// TODO: validate checklist type passed to script is .json
+// TODO: DELETE the temporary files after each run
+
 module.exports.defaultOutputLocation = `${process.cwd()}/output.pdf`;
 
 module.exports.executeNVDCheck = function (optsObj) {
@@ -20,17 +32,9 @@ module.exports.executeNVDCheck = function (optsObj) {
     let fileType = optsObj.outputType
     if (optsObj.executeType == 'full') {
         //we know all of the search props will be provided
-        if (optsObj.searchType == 'product') {
-            return productSearchHandler(searchYear, optsObj.searchTerm, './', fileType, 'test')
-        } else if (optsObj.searchType == 'vendor') {
-            return vendorSearchHanlder(searchYear, optsObj.searchTerm, './', fileType, 'test')
-        }
+        return productAndVendorSearchHanlder(searchYear, optsObj.searchTerm, './', fileType, 'test')
     } else if (optsObj.executeType == 'recent') {
-        if (optsObj.searchType == 'product') {
-            return productSearchHandler('recent', optsObj.searchTerm, './', fileType, 'test')
-        } else if (optsObj.searchType == 'vendor') {
-            return vendorSearchHanlder('recent', optsObj.searchTerm, './', fileType, 'test')
-        }
+        return productAndVendorSearchHanlder('recent', optsObj.searchTerm, './', fileType, 'test')
     }
 }
 
@@ -59,54 +63,14 @@ function extractZipFile(fileNameToExtract) {
     });
 }
 
-function productSearchHandler(yearToSearch, productSearchQuery, outputLocation, outputFormat, outputName) {
-    if (typeof (productSearchQuery) !== 'string') {
+function productAndVendorSearchHanlder(yearToSearch, searchQuery, outputLocation, outputFormat, outputName) {
+    if (typeof (searchQuery) !== 'string') {
         return console.log('Error: Product search term must be a string');
-    } else if (productSearchQuery.length < 3) {
+    } else if (searchQuery.length < 3) {
         console.log(`Error: please give a product name with at least 3 characters`);
         process.exit(0);
     } else {
-        console.log(`Searching NVD year ${yearToSearch} for ${productSearchQuery}`);
-        let NVDFileData = new NVDClass(yearToSearch);                   // generate the new NVDData references to work with
-        return Promise.resolve()                                        // start the promise chain as resolved to avoid issues
-            .then(() => getNVDZipFile(NVDFileData.NVDURL, NVDFileData.zipFileLocation))
-            .then(() => extractZipFile(NVDFileData.zipFileLocation))
-            .then(() => {
-                let NVDJSON = fs.readFileSync(NVDFileData.NVDJSONFileName, 'utf-8');
-                let parsedNVDData = JSON.parse(NVDJSON);
-                globalNVDJSON = parsedNVDData;                          // used to allow the PDF file acess to certain data
-                return parsedNVDData;
-            })
-            .then((NVDData) => searchNVDProducts(NVDData, productSearchQuery))
-            .then((affectedItemsArray) => {
-                if (outputFormat == '.pdf') {
-                    writePDFReport(affectedItemsArray, `SEARCH '${productSearchQuery}' ${yearToSearch}`, outputName);
-                } else if (outputFormat == '.txt') {
-                    writeTextReport(affectedItemsArray, `SEARCH '${productSearchQuery}' ${yearToSearch}`, outputName)
-                } else {
-                    throw new Error('Error: Unknown output format was passed to function NVDCheckRecent');
-                }
-            })
-            .then(() => {
-                return cleanTempFolder();
-            })
-            .then(() => {
-                if (debug) { console.log(`\nSuccessfully ended on ${new Date().toISOString()}`); }
-            })
-            .catch((err) => {
-                console.log(`Ended with error at ${new Date().toISOString()}: ${err}`);
-            })
-    }
-}
-
-function vendorSearchHanlder(yearToSearch, vendorSearchQuery, outputLocation, outputFormat, outputName) {
-    if (typeof (vendorSearchQuery) !== 'string') {
-        return console.log('Error: Product search term must be a string');
-    } else if (vendorSearchQuery.length < 3) {
-        console.log(`Error: please give a product name with at least 3 characters`);
-        process.exit(0);
-    } else {
-        console.log(`Searching NVD year ${yearToSearch} for ${vendorSearchQuery}`);
+        console.log(`Searching NVD year ${yearToSearch} for ${searchQuery}`);
         let NVDFileData = new NVDClass(yearToSearch);                   // generate the new NVDData references to work with
         return Promise.resolve()                                               // start the promise chain as resolved to avoid issues
             .then(() => getNVDZipFile(NVDFileData.NVDURL, NVDFileData.zipFileLocation))
@@ -117,12 +81,12 @@ function vendorSearchHanlder(yearToSearch, vendorSearchQuery, outputLocation, ou
                 globalNVDJSON = parsedNVDData;                          // used to allow the PDF file acess to certain data
                 return parsedNVDData;
             })
-            .then((NVDData) => searchNVDProducts(NVDData, vendorSearchQuery))
+            .then((NVDData) => searchNVDItems(NVDData, searchQuery))
             .then((affectedItemsArray) => {
                 if (outputFormat == '.pdf') {
-                    writePDFReport(affectedItemsArray, `SEARCH '${vendorSearchQuery}' ${yearToSearch}`, outputName);
+                    writePDFReport(affectedItemsArray, `SEARCH '${searchQuery}' ${yearToSearch}`, outputName);
                 } else if (outputFormat == '.txt') {
-                    writeTextReport(affectedItemsArray, `SEARCH '${vendorSearchQuery}' ${yearToSearch}`, outputName);
+                    writeTextReport(affectedItemsArray, `SEARCH '${searchQuery}' ${yearToSearch}`, outputName);
                 } else {
                     throw new Error('Error: Unknown output format was passed to function NVDCheckRecent');
                 }
@@ -209,7 +173,7 @@ function parseNVDData(NVDObjArray, checklist) {
     return affectedItems;
 }
 
-function searchNVDProducts(NVDObjArray, productSearchQuery) {
+function searchNVDItems(NVDObjArray, searchQuery) {
     console.log(`CVE data version: ${NVDObjArray.CVE_data_version}`);
     console.log(`CVE count: ${NVDObjArray.CVE_data_numberOfCVEs}`);
     console.log(`Last Updated: ${NVDObjArray.CVE_data_timestamp}`);
@@ -219,7 +183,7 @@ function searchNVDProducts(NVDObjArray, productSearchQuery) {
         entry.cve.affects.vendor.vendor_data.forEach((entryV, indexV) => {
             // check against the list of products to match
             entryV.product.product_data.forEach((product, productIndex) => {
-                if (product.product_name == productSearchQuery.toLowerCase() || product.product_name.includes(productSearchQuery.toLowerCase())) {
+                if (product.product_name == searchQuery.toLowerCase() || product.product_name.includes(searchQuery.toLowerCase()) || entryV.vendor_name.toLowerCase() == searchQuery.toLowerCase() || entryV.vendor_name.toLowerCase().includes(searchQuery)) {
                     if (debug) { console.log(entry); }
                     var versionsAffected = [];
                     var referenceURLs = [];
@@ -270,73 +234,7 @@ function searchNVDProducts(NVDObjArray, productSearchQuery) {
             });
         });
     });
-    console.log(`Number of matches found for '${productSearchQuery}': ${matches.length}`);
-    return matches;
-}
-
-function searchNVDVendors(NVDObjArray, vendorSearchQuery) {
-    console.log(`CVE data version: ${NVDObjArray.CVE_data_version}`);
-    console.log(`CVE count: ${NVDObjArray.CVE_data_numberOfCVEs}`);
-    console.log(`Last Updated: ${NVDObjArray.CVE_data_timestamp}`);
-    var matches = [];
-    let swChecklist = JSON.parse(fs.readFileSync(checklist, 'utf-8'));
-    NVDObjArray.CVE_Items.forEach((entry, index) => {
-        var affectedItem = {};
-        entry.cve.affects.vendor.vendor_data.forEach((entryV, indexV) => {
-            // check against the list of vendors to check for vulnerabilities
-            if (entryV.vendor_name.toLowerCase() == vendorSearchQuery.toLowerCase()) {
-                entryV.product.product_data.forEach((product, productIndex) => {
-                    if (debug) { console.log(entry); }
-                    var versionsAffected = [];
-                    var referenceURLs = [];
-                    entryV.product.product_data[0].version.version_data.forEach((version) => {
-                        versionsAffected.push(version.version_value);
-                    });
-                    if (entry.cve.hasOwnProperty('references')) {
-                        entry.cve.references.reference_data.forEach((ref, refIndex) => {
-                            referenceURLs.push(ref.url);
-                        });
-                    }
-                    // push all of the data to an the affectedItem Obj
-                    affectedItem.ID = entry.cve.CVE_data_meta.ID;
-                    affectedItem.vendorName = entryV.vendor_name;
-                    affectedItem.productName = entryV.product.product_data[0].product_name;
-                    affectedItem.publishedDate = entry.publishedDate;
-                    affectedItem.lastModifiedDate = entry.lastModifiedDate;
-                    affectedItem.vulnerabilityDescription = entry.cve.description.description_data[0].value;
-                    affectedItem.versionsAffected = versionsAffected;
-                    affectedItem.referenceURLs = referenceURLs
-                    // validate that v3 exists
-                    if (entry.impact.hasOwnProperty('baseMetricV3')) {
-                        affectedItem.v3SeverityScore = {
-                            severity: entry.impact.baseMetricV3.cvssV3.baseSeverity,
-                            scoreString: entry.impact.baseMetricV3.cvssV3.baseScore
-                        }
-                        affectedItem.attackVector = entry.impact.baseMetricV3.cvssV3.attackVector;
-                    } else {
-                        affectedItem.v3SeverityScore = {
-                            severity: 'NONE',
-                            scoreString: 'NONE'
-                        }
-                    }
-                    // Do the same for v2
-                    if (entry.impact.hasOwnProperty('baseMetricV2')) {
-                        affectedItem.v2SeverityScore = {
-                            severity: entry.impact.baseMetricV2.severity,
-                            scoreString: entry.impact.baseMetricV2.cvssV2.baseScore
-                        }
-                    } else {
-                        affectedItem.v2SeverityScore = {
-                            severity: 'NONE',
-                            scoreString: 'NONE'
-                        }
-                    }
-                    matches.push(affectedItem);       // push the affected item to the array to return
-                });
-            }
-        });
-    });
-    console.log(`Number of matches found for '${vendorSearchQuery}': ${matches.length}`);
+    console.log(`Number of matches found for '${searchQuery}': ${matches.length}`);
     return matches;
 }
 
