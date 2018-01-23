@@ -9,12 +9,18 @@
 
 <body>
   <div class="w3-container w3-teal">
-    <h1>NVD GUI 0.0.4</h1>
+    <h1>NVD GUI 0.0.5</h1>
   </div>
   <!-- All of the Node.js APIs are available in this renderer process. -->
-
   <form id="main" class="w3-panel w3-white w3-card-4 w3-container w3-content w3-animate-bottom	">
-    <h3>Search Type:</h3>
+    <p style="font-size:120%;">
+      Welcome to the NVD GUI!
+      <br>
+      <br> With this App, you can search the NVD vulnerability database by year or recent entries that match a specific search
+      term. (Vednor or Product name) and generate a readable PDF report from the data
+      <br>
+    </p>
+    <h4>Search Type:</h4>
     <input type="radio" class="w3-radio" name="executeType" value="full" checked>
     <label>Full</label>
     <br>
@@ -22,7 +28,7 @@
     <label>Recent</label>
     <div id="yearSelectAreaForFull" name="YearSelectAreaForFull" hidden="true">
       <br>
-      <h3>Year to Search:</h3>
+      <h4>Year to Search:</h4>
       <select name="yearSelectDropDownFull" class="w3-select">
         <option value="2018">2018</option>
         <option value="2017">2017</option>
@@ -36,33 +42,40 @@
       </select>
     </div>
     <br>
-    <h3>Search Term:</h3>
+    <h4>Search Term:</h4>
     <input type="text" class="w3-input" id="searchTerm" name="searchTerm" value="search_term">
     <br>
-    <h3>Options:</h3>
+    <h4>Options:</h4>
     <input type="checkbox" class="w3-check" name="writeReportToDisk" value="Write report to file..."> Custom output Location${outputLocation here}
     <input type="button" name="BrowseReportLocation" value="Browse">
     <br>
     <input type="checkbox" class="w3-check" name="customChecklist" value="Get custom checklist"> Custom checklist JSON file
     <input type="button" name="BrowseChecklistLocation" value="Browse">
     <br>
-    <h3>Type of file to output:</h3>
-    <input type="radio" class="w3-radio" name="outputType" value=".pdf" checked> PDF
-    <br>
-    <input type="radio" class="w3-radio" name="outputType" value=".txt"> TXT
     <br>
     <br>
-    <input type="submit" value="Generate report">
+    <input type="submit" value="Generate report" onclick="document.getElementById('loadingModal').style.display='block'">
     <br>
     <br>
   </form>
+
+
+  <div id="loadingModal" class="w3-modal w3-center">
+    <div class="w3-modal-content w3-animate-bottom w3-card-4">
+      <header class="w3-container w3-teal">
+        <span onclick="document.getElementById('loadingModal').style.display='none'" class="w3-button w3-display-topright">&times;</span>
+        <h2>Loading...</h2>
+      </header>
+    </div>
+  </div>
+  </div>
 
   <script>
     // TODO: Get the buttons working
     // TODO: Allow for a checklist to be used
     // TODO: Add more features that make sense
     // TODO: handle the larger PDFs sometimes freaking out
-
+    // TODO: Create a loading indicator
     // You can also require other files to run in this process
     require('./renderer.js');
     const { BrowserWindow } = require('electron').remote;
@@ -92,7 +105,6 @@
       let argsObj = {};
       // collect all of the current form values
       argsObj.executeType = form.executeType.value;
-      argsObj.outputType = form.outputType.value;
       if (form.executeType.value == 'recent') {
         argsObj.searchTerm = form.searchTerm.value;
       } else if (form.executeType.value == 'full') {
@@ -101,6 +113,7 @@
         argsObj.searchYear = form.yearSelectDropDownFull.value;
         argsObj.searchTerm = form.searchTerm.value;
       }
+      console.log('Loading....');
       nvd.executeNVDCheck(argsObj)
         .then(() => {
           // open the generated PDF/TXT file
@@ -108,14 +121,13 @@
           win.setMenu(null);
           PDFWindow.addSupport(win);
           console.log(process.cwd());
-          if (form.outputType.value == '.pdf') {
-            win.loadURL(`${process.cwd()}/test.pdf`);
-          } else if (form.outputType.value == '.txt') {
-            win.loadURL(`file://${process.cwd()}/test.txt`);
-            win.once('ready-to-show', () => {
-              win.show();
-            })
-          }
+          win.loadURL(`${process.cwd()}/test.pdf`);
+          document.getElementById('loadingModal').style.display = 'none'
+
+          win.once('ready-to-show', () => {
+            win.show();
+          })
+          console.log('Done!');
         })
       // return all of the info to nvd-exports here!
       // You must return false to prevent the default form behavior
