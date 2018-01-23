@@ -15,11 +15,11 @@
 
   <form id="main" class="w3-panel w3-white w3-card-4 w3-container w3-content w3-animate-bottom	">
     <h3>Search Type:</h3>
-      <input type="radio" class="w3-radio" name="executeType" value="full" checked>
-      <label>Full</label>
-      <br>
-      <input type="radio" class="w3-radio" name="executeType" value="recent">
-      <label>Recent</label>
+    <input type="radio" class="w3-radio" name="executeType" value="full" checked>
+    <label>Full</label>
+    <br>
+    <input type="radio" class="w3-radio" name="executeType" value="recent">
+    <label>Recent</label>
     <div id="yearSelectAreaForFull" name="YearSelectAreaForFull" hidden="true">
       <br>
       <h3>Year to Search:</h3>
@@ -59,7 +59,6 @@
 
   <script>
     // TODO: Get the buttons working
-    // TODO: Allow a custom filename/location
     // TODO: Allow for a checklist to be used
     // TODO: Add more features that make sense
     // TODO: handle the larger PDFs sometimes freaking out
@@ -106,12 +105,16 @@
         .then(() => {
           // open the generated PDF/TXT file
           const win = new BrowserWindow({ width: 800, height: 600 });
+          win.setMenu(null);
           PDFWindow.addSupport(win);
           console.log(process.cwd());
           if (form.outputType.value == '.pdf') {
             win.loadURL(`${process.cwd()}/test.pdf`);
           } else if (form.outputType.value == '.txt') {
             win.loadURL(`file://${process.cwd()}/test.txt`);
+            win.once('ready-to-show', () => {
+              win.show();
+            })
           }
         })
       // return all of the info to nvd-exports here!
