@@ -11,9 +11,6 @@ const debug = config.debug;                                     // used to allow
 const tempFileDir = `${process.cwd()}/temp`;
 var globalNVDJSON;
 
-//TODO: remove the product vendor/product name option and
-// just have the script look for either
-
 // TODO: Allow for vulerability severity arg (IE Ignore 'LOW' scoring entries that match)
 // TODO: for recents, ensure that the CVE review is FINAL?
 // TODO: add params for every function that needs them
@@ -21,20 +18,17 @@ var globalNVDJSON;
 // TODO: make the NVDCheckFull/Recent one funtion (it's doable!)
 // TODO: add more of the NVD data to the objects in parseNVDData
 // TODO: validate checklist type passed to script is .json
-// TODO: DELETE the temporary files after each run
 
 module.exports.defaultOutputLocation = `${process.cwd()}/output.pdf`;
 
 module.exports.executeNVDCheck = function (optsObj) {
     console.log(optsObj);
     let searchYear = optsObj.searchYear;
-    let outputType = optsObj.outputType;
-    let fileType = optsObj.outputType
     if (optsObj.executeType == 'full') {
         //we know all of the search props will be provided
-        return productAndVendorSearchHanlder(searchYear, optsObj.searchTerm, './', fileType, 'test')
+        return productAndVendorSearchHanlder(searchYear, optsObj.searchTerm, './', '.pdf', 'test')
     } else if (optsObj.executeType == 'recent') {
-        return productAndVendorSearchHanlder('recent', optsObj.searchTerm, './', fileType, 'test')
+        return productAndVendorSearchHanlder('recent', optsObj.searchTerm, './', '.pdf', 'test')
     }
 }
 
