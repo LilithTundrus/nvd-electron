@@ -11,10 +11,12 @@ const url = require('url')
 // be closed automatically when the JavaScript object is garbage collected.
 let mainWindow
 
-function createWindow () {
+function createWindow() {
   // Create the browser window.
-  mainWindow = new BrowserWindow({width: 800, height: 600})
-
+  mainWindow = new BrowserWindow({ width: 1024, height: 768 })
+  mainWindow.once('ready-to-show', () => {
+    mainWindow.show()
+  })
   // and load the index.html of the app.
   mainWindow.loadURL(url.format({
     pathname: path.join(__dirname, 'index.html'),
