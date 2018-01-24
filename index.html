@@ -3,7 +3,7 @@
 
 <head>
   <meta charset="UTF-8">
-  <title>NVD GUI 0.0.4</title>
+  <title>NVD GUI 0.0.5</title>
   <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
 </head>
 
@@ -47,7 +47,7 @@
     <br>
     <h4>Options:</h4>
     <input type="checkbox" class="w3-check" name="writeReportToDisk" value="Write report to file..."> Custom output Location${outputLocation here}
-    <input type="button" name="BrowseReportLocation" value="Browse">
+    <input type="button" clase="file" name="BrowseReportLocation" value="Browse">
     <br>
     <input type="checkbox" class="w3-check" name="customChecklist" value="Get custom checklist"> Custom checklist JSON file
     <input type="button" name="BrowseChecklistLocation" value="Browse">
@@ -58,7 +58,6 @@
     <br>
     <br>
   </form>
-
 
   <div id="loadingModal" class="w3-modal w3-center">
     <div class="w3-modal-content w3-animate-bottom w3-card-4">
@@ -75,10 +74,11 @@
     // TODO: Allow for a checklist to be used
     // TODO: Add more features that make sense
     // TODO: handle the larger PDFs sometimes freaking out
-    // TODO: Create a loading indicator
+
     // You can also require other files to run in this process
     require('./renderer.js');
     const { BrowserWindow } = require('electron').remote;
+
     const PDFWindow = require('electron-pdf-window');
     let nvd = require('./nvd-exports.js');
 
@@ -143,11 +143,16 @@
       form.customChecklist.disabled = false;
       form.BrowseChecklistLocation.disabled = false;
     }
+    // Listen for form submit
     if (form.attachEvent) {
       form.attachEvent("submit", processForm);
     } else {
       form.addEventListener("submit", processForm);
     }
+    document.getElementById('BrowseReportLocation').addEventListener('click', _ => {
+      BrowserWindow.selectDirectory()
+    })
+
   </script>
 </body>
 

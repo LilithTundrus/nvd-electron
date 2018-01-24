@@ -18,6 +18,7 @@ var globalNVDJSON;
 // TODO: make the NVDCheckFull/Recent one funtion (it's doable!)
 // TODO: add more of the NVD data to the objects in parseNVDData
 // TODO: validate checklist type passed to script is .json
+// TODO: remove unused code
 
 module.exports.defaultOutputLocation = `${process.cwd()}/output.pdf`;
 
