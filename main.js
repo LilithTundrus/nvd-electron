@@ -1,5 +1,5 @@
 const electron = require('electron')
-const dialog = electrong.dialog
+const dialog = electron.dialog
 
 // Module to control application life.
 const app = electron.app
@@ -69,5 +69,7 @@ function selectDirectory() {
 // In this file you can include the rest of your app's specific main process
 // code. You can also put them in separate files and require them here.
 exports.selectDirectory = function () {
-  // dialog.showOpenDialog as before
+  dialog.showOpenDialog(mainWindow, {
+    properties: ['openDirectory']
+  })
 }

@@ -46,8 +46,8 @@
     <input type="text" class="w3-input" id="searchTerm" name="searchTerm" value="search_term">
     <br>
     <h4>Options:</h4>
-    <input type="checkbox" class="w3-check" name="writeReportToDisk" value="Write report to file..."> Custom output Location${outputLocation here}
-    <input type="button" clase="file" name="BrowseReportLocation" value="Browse">
+    <input type="checkbox" class="w3-check" id="writeReportToDisk" name="writeReportToDisk" value="Write report to file..."> Custom output Location${outputLocation here}
+    <input type="button" id="BrowseReportLocation" name="BrowseReportLocation" value="Browse" />
     <br>
     <input type="checkbox" class="w3-check" name="customChecklist" value="Get custom checklist"> Custom checklist JSON file
     <input type="button" name="BrowseChecklistLocation" value="Browse">
@@ -77,7 +77,8 @@
 
     // You can also require other files to run in this process
     require('./renderer.js');
-    const { BrowserWindow } = require('electron').remote;
+    const { BrowserWindow, dialog } = require('electron').remote;
+
 
     const PDFWindow = require('electron-pdf-window');
     let nvd = require('./nvd-exports.js');
@@ -143,6 +144,16 @@
       form.customChecklist.disabled = false;
       form.BrowseChecklistLocation.disabled = false;
     }
+
+    function selectDirectory() {
+      dialog.showOpenDialog({
+        properties: ['openDirectory']
+      }, (filePaths) => {
+        console.log(filePaths)
+      })
+
+    }
+
     // Listen for form submit
     if (form.attachEvent) {
       form.attachEvent("submit", processForm);
@@ -150,7 +161,7 @@
       form.addEventListener("submit", processForm);
     }
     document.getElementById('BrowseReportLocation').addEventListener('click', _ => {
-      BrowserWindow.selectDirectory()
+      selectDirectory()
     })
 
   </script>
