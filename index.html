@@ -74,6 +74,7 @@
     // TODO: Allow for a checklist to be used
     // TODO: Add more features that make sense
     // TODO: handle the larger PDFs sometimes freaking out
+    // TODO: handle the checkbox for a custom directory
 
     // You can also require other files to run in this process
     require('./renderer.js');
@@ -133,16 +134,6 @@
       // return all of the info to nvd-exports here!
       // You must return false to prevent the default form behavior
       return false;
-    }
-
-    function disableChecklistOption() {
-      form.customChecklist.disabled = true;
-      form.BrowseChecklistLocation.disabled = true;
-    }
-
-    function enableChecklistOption() {
-      form.customChecklist.disabled = false;
-      form.BrowseChecklistLocation.disabled = false;
     }
 
     function selectDirectory() {
