@@ -46,8 +46,9 @@
     <input type="text" class="w3-input" id="searchTerm" name="searchTerm" value="search_term">
     <br>
     <h4>Options:</h4>
-    <input type="checkbox" class="w3-check" id="writeReportToDisk" name="writeReportToDisk" value="Write report to file..."> Custom output Location${outputLocation here}
-    <input type="button" id="BrowseReportLocation" name="BrowseReportLocation" value="Browse" />
+    <input type="checkbox" class="w3-check" id="customFolder" name="customFolder">Write report to custom folder:
+    <div id="outputDirName">None.</div>
+    <input type="button" id="browseReportLocation" name="browseReportLocation" value="Browse" disabled="true"/>
     <br>
     <input type="checkbox" class="w3-check" name="customChecklist" value="Get custom checklist"> Custom checklist JSON file
     <input type="button" name="BrowseChecklistLocation" value="Browse">
@@ -79,10 +80,8 @@
     // You can also require other files to run in this process
     require('./renderer.js');
     const { BrowserWindow, dialog } = require('electron').remote;
-
-
     const PDFWindow = require('electron-pdf-window');
-    let nvd = require('./nvd-exports.js');
+    const nvd = require('./nvd-exports.js');
 
     // Since the default search radio button select is full, show the elements needed on start
     document.getElementById("yearSelectAreaForFull").hidden = false;
@@ -97,6 +96,14 @@
       document.getElementById("yearSelectAreaForFull").hidden = true;
       enableChecklistOption();
     }
+    form.customFolder.onclick = function () {
+      if (form.customFolder.checked == false) {
+        document.getElementById('browseReportLocation').disabled = true;
+      }
+      else {
+        document.getElementById('browseReportLocation').disabled = false;
+      }
+    }
 
     // process the form locally
     function processForm(e) {
@@ -108,6 +115,7 @@
       // collect all of the current form values
       argsObj.executeType = form.executeType.value;
       if (form.executeType.value == 'recent') {
+        // check the browse button's value!
         argsObj.searchTerm = form.searchTerm.value;
       } else if (form.executeType.value == 'full') {
         // use the same searchYear opt as above because we already know the execute type
@@ -140,7 +148,9 @@
       dialog.showOpenDialog({
         properties: ['openDirectory']
       }, (filePaths) => {
+        //TODO: handle nothing being given back
         console.log(filePaths)
+        document.getElementById('outputDirName').textContent = filePaths
       })
 
     }
@@ -151,7 +161,7 @@
     } else {
       form.addEventListener("submit", processForm);
     }
-    document.getElementById('BrowseReportLocation').addEventListener('click', _ => {
+    document.getElementById('browseReportLocation').addEventListener('click', _ => {
       selectDirectory()
     })
 
