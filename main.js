@@ -60,12 +60,6 @@ app.on('activate', function () {
   }
 })
 
-function selectDirectory() {
-  dialog.showOpenDialog(mainWindow, {
-    properties: ['openDirectory']
-  })
-}
-
 // In this file you can include the rest of your app's specific main process
 // code. You can also put them in separate files and require them here.
 exports.selectDirectory = function () {
