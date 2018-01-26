@@ -5,6 +5,7 @@
   <meta charset="UTF-8">
   <title>NVD GUI 0.0.6</title>
   <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
 </head>
 
 <body>
@@ -48,6 +49,7 @@
     <h4>Options:</h4>
     <input type="checkbox" class="w3-check" id="customChecklist" name="customChecklist"> Custom checklist JSON file
     <input type="button" id="browseChecklistLocation" name="browseChecklistLocation" value="Browse" disabled="true">
+    <i id="helpButton" class="material-icons w3-xlarge">help</i>
     <br>
     <br> Checklist location:
     <div id="checklistLocation">None.</div>
@@ -62,9 +64,10 @@
       <header class="w3-container w3-teal">
         <span onclick="document.getElementById('loadingModal').style.display='none'" class="w3-button w3-display-topright">&times;</span>
         <h2>Loading...</h2>
-        <div class="w3-container w3-white">
-          <p>Some text..</p>
-          <p>Some text..</p>
+        <div class="w3-container w3-teal">
+          <p>
+            <i class="material-icons w3-spin w3-jumbo">refresh</i>
+          </p>
         </div>
       </header>
     </div>
@@ -105,6 +108,10 @@
       // collect all of the current form values
       let argsObj = {};
       argsObj.executeType = form.executeType.value;
+      // get the custom JSON location
+      if(document.getElementById('browseChecklistLocation').value !== 'None.') {
+        console.log('Using custom JSON checklist')
+      }
       if (form.executeType.value == 'recent') {
         // check the browse button's value!
         argsObj.searchTerm = form.searchTerm.value;
@@ -149,8 +156,6 @@
       });
     }
 
-
-
     // Listen for form submit
     if (form.attachEvent) {
       form.attachEvent("submit", processForm);
@@ -160,15 +165,25 @@
     form.customChecklist.onclick = function () {
       if (form.customChecklist.checked == false) {
         document.getElementById('browseChecklistLocation').disabled = true;
+        document.getElementById('searchTerm').disabled = false;
       }
       else {
         document.getElementById('browseChecklistLocation').disabled = false;
+        document.getElementById('searchTerm').disabled = true;
       }
     }
     document.getElementById('browseChecklistLocation').addEventListener('click', _ => {
       selectChecklistFile();
-
     })
+    document.getElementById("helpButton").addEventListener("click", function () {
+      alert(`Upload a JSON checklist fileto execute multiple searches\n\nExample:
+      \n[
+    {
+        "manufacturerName": "Apache",
+        "softwareName": "Apache Maven"
+    },
+]`);
+    });
   </script>
 </body>
 
