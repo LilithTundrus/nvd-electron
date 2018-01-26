@@ -46,9 +46,6 @@
     <input type="text" class="w3-input" id="searchTerm" name="searchTerm" value="search_term">
     <br>
     <h4>Options:</h4>
-    <input type="checkbox" class="w3-check" id="customFolder" name="customFolder">Write report to custom folder:
-    <div id="outputDirName">None.</div>
-    <input type="button" id="browseReportLocation" name="browseReportLocation" value="Browse" disabled="true" />
     <br>
     <input type="checkbox" class="w3-check" name="customChecklist" value="Get custom checklist"> Custom checklist JSON file
     <input type="button" name="BrowseChecklistLocation" value="Browse">
@@ -100,14 +97,8 @@
       document.getElementById("yearSelectAreaForFull").hidden = true;
       enableChecklistOption();
     }
-    form.customFolder.onclick = function () {
-      if (form.customFolder.checked == false) {
-        document.getElementById('browseReportLocation').disabled = true;
-      }
-      else {
-        document.getElementById('browseReportLocation').disabled = false;
-      }
-    }
+
+
 
     // process the form locally
     function processForm(e) {
@@ -115,11 +106,9 @@
         return alert('Please provide a search term with at least 3 characters')
       }
       if (e.preventDefault) e.preventDefault();
-      let argsObj = {};
       // collect all of the current form values
+      let argsObj = {};
       argsObj.executeType = form.executeType.value;
-
-      // get the output location
       if (form.executeType.value == 'recent') {
         // check the browse button's value!
         argsObj.searchTerm = form.searchTerm.value;
@@ -149,26 +138,12 @@
       return false;
     }
 
-    function selectDirectory() {
-      dialog.showOpenDialog({
-        properties: ['openDirectory']
-      }, (filePaths) => {
-        //TODO: handle nothing being given back
-        console.log(filePaths)
-        document.getElementById('outputDirName').textContent = filePaths
-      })
-
-    }
-
     // Listen for form submit
     if (form.attachEvent) {
       form.attachEvent("submit", processForm);
     } else {
       form.addEventListener("submit", processForm);
     }
-    document.getElementById('browseReportLocation').addEventListener('click', _ => {
-      selectDirectory()
-    })
 
   </script>
 </body>
