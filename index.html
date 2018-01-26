@@ -16,8 +16,8 @@
     <p style="font-size:120%;">
       Welcome to the NVD GUI!
       <br>
-      <br> With this App, you can search the NVD vulnerability database by year or recent entries that match a specific search
-      term. (Vednor or Product name) and generate a readable PDF report from the data
+      <br> With this App, you can search the NVD by year or recent entries that match a specific search term. (Vednor or Product
+      name) and generate a readable PDF report from the data
       <br>
     </p>
     <h4>Search Type:</h4>
@@ -48,7 +48,7 @@
     <h4>Options:</h4>
     <input type="checkbox" class="w3-check" id="customFolder" name="customFolder">Write report to custom folder:
     <div id="outputDirName">None.</div>
-    <input type="button" id="browseReportLocation" name="browseReportLocation" value="Browse" disabled="true"/>
+    <input type="button" id="browseReportLocation" name="browseReportLocation" value="Browse" disabled="true" />
     <br>
     <input type="checkbox" class="w3-check" name="customChecklist" value="Get custom checklist"> Custom checklist JSON file
     <input type="button" name="BrowseChecklistLocation" value="Browse">
@@ -65,6 +65,10 @@
       <header class="w3-container w3-teal">
         <span onclick="document.getElementById('loadingModal').style.display='none'" class="w3-button w3-display-topright">&times;</span>
         <h2>Loading...</h2>
+        <div class="w3-container w3-white">
+          <p>Some text..</p>
+          <p>Some text..</p>
+        </div>
       </header>
     </div>
   </div>
@@ -114,6 +118,8 @@
       let argsObj = {};
       // collect all of the current form values
       argsObj.executeType = form.executeType.value;
+
+      // get the output location
       if (form.executeType.value == 'recent') {
         // check the browse button's value!
         argsObj.searchTerm = form.searchTerm.value;
@@ -132,14 +138,13 @@
           PDFWindow.addSupport(win);
           console.log(process.cwd());
           win.loadURL(`${process.cwd()}/test.pdf`);
-          document.getElementById('loadingModal').style.display = 'none'
+          document.getElementById('loadingModal').style.display = 'none';
 
           win.once('ready-to-show', () => {
             win.show();
           })
           console.log('Done!');
         })
-      // return all of the info to nvd-exports here!
       // You must return false to prevent the default form behavior
       return false;
     }
