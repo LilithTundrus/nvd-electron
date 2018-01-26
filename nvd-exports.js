@@ -13,12 +13,9 @@ var globalNVDJSON;
 
 // TODO: Allow for vulerability severity arg (IE Ignore 'LOW' scoring entries that match)
 // TODO: for recents, ensure that the CVE review is FINAL?
-// TODO: add params for every function that needs them
 // TODO: fix the global JSON data issue that really shouldn't be there
-// TODO: make the NVDCheckFull/Recent one funtion (it's doable!)
 // TODO: add more of the NVD data to the objects in parseNVDData
 // TODO: validate checklist type passed to script is .json
-// TODO: remove unused code
 
 module.exports.defaultOutputLocation = `${process.cwd()}/output.pdf`;
 
@@ -27,10 +24,20 @@ module.exports.executeNVDCheck = function (optsObj) {
     let searchYear = optsObj.searchYear;
     if (optsObj.executeType == 'full') {
         //we know all of the search props will be provided
-        return productAndVendorSearchHanlder(searchYear, optsObj.searchTerm, './', '.pdf', 'test')
+        return productAndVendorSearchHanlder(searchYear, optsObj.searchTerm, './', 'output')
+
     } else if (optsObj.executeType == 'recent') {
-        return productAndVendorSearchHanlder('recent', optsObj.searchTerm, './', '.pdf', 'test')
+        return productAndVendorSearchHanlder('recent', optsObj.searchTerm, './', 'output');
     }
+}
+
+module.exports.wait = function () {
+    return new Promise((resolve) => {
+        setTimeout(function () {
+            console.log('Waiting for DB to be ready..')
+            resolve('Promise resolved!!');
+        }, 2 * 1000);
+    });
 }
 
 // NON-PUBLIC functions
@@ -58,7 +65,7 @@ function extractZipFile(fileNameToExtract) {
     });
 }
 
-function productAndVendorSearchHanlder(yearToSearch, searchQuery, outputLocation, outputFormat, outputName) {
+function productAndVendorSearchHanlder(yearToSearch, searchQuery, outputLocation, outputName) {
     if (typeof (searchQuery) !== 'string') {
         return console.log('Error: Product search term must be a string');
     } else if (searchQuery.length < 3) {
@@ -78,13 +85,7 @@ function productAndVendorSearchHanlder(yearToSearch, searchQuery, outputLocation
             })
             .then((NVDData) => searchNVDItems(NVDData, searchQuery))
             .then((affectedItemsArray) => {
-                if (outputFormat == '.pdf') {
-                    writePDFReport(affectedItemsArray, `SEARCH '${searchQuery}' ${yearToSearch}`, outputName);
-                } else if (outputFormat == '.txt') {
-                    writeTextReport(affectedItemsArray, `SEARCH '${searchQuery}' ${yearToSearch}`, outputName);
-                } else {
-                    throw new Error('Error: Unknown output format was passed to function NVDCheckRecent');
-                }
+                writePDFReport(affectedItemsArray, `SEARCH '${searchQuery}' ${yearToSearch}`, outputName);
             })
             .then(() => {
                 return cleanTempFolder();
@@ -263,38 +264,10 @@ function writePDFReport(affectedItemsArray, timeArg, outputArg) {
     });
     doc.text('\n\nEnd of File');
     doc.end();
-    console.log(`Wrote report as ${outputArg}.pdf`);
+    return console.log(`Wrote report as ${outputArg}.pdf`);
 }
 
-function writeTextReport(affectedItemsArray, timeArg, outputArg) {
-    var textData = '';
-    textData = textData + `NVD ${timeArg} Vulnerability Check Report ${new Date().toDateString()}`;
-    textData = textData + `\n\nCVE data version: ${globalNVDJSON.CVE_data_version}`;
-    textData = textData + `\nCVE count: ${globalNVDJSON.CVE_data_numberOfCVEs}`;
-    textData = textData + `\nLast Updated: ${globalNVDJSON.CVE_data_timestamp}`;
-    textData = textData + `\nChecklist File: ${config.checklistName}`;
-    textData = textData + `\nNumber of Vulnerabilites Matched: ${affectedItemsArray.length}`;
-    textData = textData + `\n\n`;                                   // Extra spacing before iterating through the array
-    // get each affected item's data and format it
-    affectedItemsArray.forEach((entry, index) => {
-        textData = textData + `\n${capitalizeFirstLetter(entry.vendorName)} ${capitalizeFirstLetter(entry.productName)} (${entry.ID})`;
-        textData = textData + `\nPublished: ${entry.publishedDate}    Modified: ${entry.lastModifiedDate}`;
-        textData = textData + `\nVersions Affected: ${entry.versionsAffected.join(', ')}`;
-        textData = textData + `\nAttack Vector: ${entry.attackVector}`;
-        textData = textData + `\nDescription: ${entry.vulnerabilityDescription}`;
-        textData = textData + `\nV3 Score: ${entry.v3SeverityScore.severity} (${entry.v3SeverityScore.scoreString})`;
-        textData = textData + `\nV2 Score: ${entry.v2SeverityScore.severity} (${entry.v2SeverityScore.scoreString})`;
-        textData = textData + `\nReferences:\n`;
-        textData = textData + `${entry.referenceURLs.join('\n')}`;
-        textData = textData + `\n`;                             // Allow for some whitespace in between entries
-    });
-    textData = textData + `\n\n\nEnd of File`;                  // Make sure the entire array was iterated through
-
-    fs.writeFileSync(`${outputArg}.txt`, textData);
-    console.log(`Wrote report as ${outputArg}.txt`);
-}
-
-function NVDCheckFull(yearToSearch, outputLocation, outputFormat, checklistLocation, outputName) {
+function NVDCheckFull(yearToSearch, outputLocation, checklistLocation, outputName) {
     let NVDFileData = new NVDClass(yearToSearch);                   // generate the new NVDData references to work with
     console.log(`Getting NVD FULL data to compare against ${checklistLocation}`);
     return Promise.resolve()                                        // start the promise chain as resolved to avoid issues
@@ -308,13 +281,7 @@ function NVDCheckFull(yearToSearch, outputLocation, outputFormat, checklistLocat
         })
         .then((NVDData) => parseNVDData(NVDData, checklistLocation))                   // sort through the entire data list and parse for matches
         .then((affectedItemsArray) => {
-            if (outputFormat == '.pdf') {
-                writePDFReport(affectedItemsArray, yearToSearch, outputName);
-            } else if (outputFormat == '.txt') {
-                writeTextReport(affectedItemsArray, yearToSearch, outputName);
-            } else {
-                throw new Error('Error: Unknown output format was passed to function NVDCheckRecent');
-            }
+            writePDFReport(affectedItemsArray, yearToSearch, outputName);
         })
         .then(() => {
             return cleanTempFolder();
@@ -327,7 +294,7 @@ function NVDCheckFull(yearToSearch, outputLocation, outputFormat, checklistLocat
         })
 }
 
-function NVDCheckRecent(outputLocation, outputFormat, checklistLocation, outputName) {
+function NVDCheckRecent(outputLocation, checklistLocation, outputName) {
     console.log(`Getting NVD recent data to compare against ${checklistLocation}`);
     Promise.resolve()                                               // start the promise chain as resolved to avoid issues
         .then(() => getNVDZipFile(config.NVDURLRecent, config.zipFileNameRecent))        // Get the RECENT json that is in .zip format
@@ -340,13 +307,7 @@ function NVDCheckRecent(outputLocation, outputFormat, checklistLocation, outputN
         })
         .then((NVDData) => parseNVDData(NVDData, checklistLocation))
         .then((affectedItemsArray) => {
-            if (outputFormat == '.pdf') {
-                writePDFReport(affectedItemsArray, 'RECENT', outputName);
-            } else if (outputFormat == '.txt') {
-                writeTextReport(affectedItemsArray, 'RECENT', outputName);
-            } else {
-                throw new Error('Error: Unknown output format was passed to function NVDCheckRecent');
-            }
+            writePDFReport(affectedItemsArray, 'RECENT', outputName);
         })
         .then(() => {
             return cleanTempFolder();
@@ -370,3 +331,4 @@ function cleanTempFolder() {
         }
     });
 }
+
