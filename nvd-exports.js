@@ -15,7 +15,6 @@ var globalNVDJSON;
 // TODO: for recents, ensure that the CVE review is FINAL?
 // TODO: fix the global JSON data issue that really shouldn't be there
 // TODO: add more of the NVD data to the objects in parseNVDData
-// TODO: validate checklist type passed to script is .json
 
 module.exports.defaultOutputLocation = `${process.cwd()}/output.pdf`;
 
@@ -24,10 +23,10 @@ module.exports.executeNVDCheck = function (optsObj) {
     let searchYear = optsObj.searchYear;
     if (optsObj.executeType == 'full') {
         //we know all of the search props will be provided
-        return productAndVendorSearchHanlder(searchYear, optsObj.searchTerm, './', 'output')
+        return productAndVendorSearchHanlder(searchYear, optsObj.searchTerm, './', `${tempFileDir}/output`)
 
     } else if (optsObj.executeType == 'recent') {
-        return productAndVendorSearchHanlder('recent', optsObj.searchTerm, './', 'output');
+        return productAndVendorSearchHanlder('recent', optsObj.searchTerm, './', `${tempFileDir}/output`);
     }
 }
 
@@ -37,6 +36,18 @@ module.exports.wait = function () {
             console.log('Waiting for DB to be ready..')
             resolve('Promise resolved!!');
         }, 2 * 1000);
+    });
+}
+
+module.exports.cleanTempDir = function () {
+    // Clean the temporary folder on every PDF generation execute here
+    fs.readdir(tempFileDir, (err, files) => {
+        if (err) throw err;
+        for (const file of files) {
+            fs.unlink(path.join(tempFileDir, file), err => {
+                if (err) throw err;
+            });
+        }
     });
 }
 
@@ -86,9 +97,6 @@ function productAndVendorSearchHanlder(yearToSearch, searchQuery, outputLocation
             .then((NVDData) => searchNVDItems(NVDData, searchQuery))
             .then((affectedItemsArray) => {
                 writePDFReport(affectedItemsArray, `SEARCH '${searchQuery}' ${yearToSearch}`, outputName);
-            })
-            .then(() => {
-                return cleanTempFolder();
             })
             .then(() => {
                 if (debug) { console.log(`\nSuccessfully ended on ${new Date().toISOString()}`); }
@@ -284,9 +292,6 @@ function NVDCheckFull(yearToSearch, outputLocation, checklistLocation, outputNam
             writePDFReport(affectedItemsArray, yearToSearch, outputName);
         })
         .then(() => {
-            return cleanTempFolder();
-        })
-        .then(() => {
             if (debug) { console.log(`\nSuccessfully ended on ${new Date().toISOString()}`); }
         })
         .catch((err) => {
@@ -310,25 +315,10 @@ function NVDCheckRecent(outputLocation, checklistLocation, outputName) {
             writePDFReport(affectedItemsArray, 'RECENT', outputName);
         })
         .then(() => {
-            return cleanTempFolder();
-        })
-        .then(() => {
             if (debug) { console.log(`\nSuccessfully ended on ${new Date().toISOString()}`); }
         })
         .catch((err) => {
             console.log(`Ended with error at ${new Date().toISOString()}: ${err}`);
         })
-}
-
-function cleanTempFolder() {
-    // Clean the temporary folder on every PDF generation execute here
-    fs.readdir(tempFileDir, (err, files) => {
-        if (err) throw err;
-        for (const file of files) {
-            fs.unlink(path.join(tempFileDir, file), err => {
-                if (err) throw err;
-            });
-        }
-    });
 }
 

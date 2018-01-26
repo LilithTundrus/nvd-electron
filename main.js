@@ -25,6 +25,7 @@ function createWindow() {
     protocol: 'file:',
     slashes: true
   }))
+  //mainWindow.setMenu(null);
 
   // Open the DevTools.
   // mainWindow.webContents.openDevTools()
@@ -51,6 +52,9 @@ app.on('window-all-closed', function () {
     app.quit()
   }
 })
+
+
+
 
 app.on('activate', function () {
   // On OS X it's common to re-create a window in the app when the

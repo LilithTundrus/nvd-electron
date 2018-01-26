@@ -46,13 +46,6 @@
     <h4>Search Term:</h4>
     <input type="text" class="w3-input" id="searchTerm" name="searchTerm" value="search_term">
     <br>
-    <h4>Options:</h4>
-    <input type="checkbox" class="w3-check" id="customChecklist" name="customChecklist"> Custom checklist JSON file
-    <input type="button" id="browseChecklistLocation" name="browseChecklistLocation" value="Browse" disabled="true">
-    <i id="helpButton" class="material-icons w3-xlarge">help</i>
-    <br>
-    <br> Checklist location:
-    <div id="checklistLocation">None.</div>
     <br>
     <input type="submit" value="Generate report" onclick="document.getElementById('loadingModal').style.display='block'">
     <br>
@@ -63,7 +56,7 @@
     <div class="w3-modal-content w3-animate-bottom w3-card-4">
       <header class="w3-container w3-teal">
         <span onclick="document.getElementById('loadingModal').style.display='none'" class="w3-button w3-display-topright">&times;</span>
-        <h2>Loading...</h2>
+        <h2 id="loadingMsg">Loading...</h2>
         <div class="w3-container w3-teal">
           <p>
             <i class="material-icons w3-spin w3-jumbo">refresh</i>
@@ -75,11 +68,8 @@
   </div>
 
   <script>
-    // TODO: Get the buttons working
-    // TODO: Allow for a checklist to be used
     // TODO: Add more features that make sense
     // TODO: handle the larger PDFs sometimes freaking out
-    // TODO: handle the checkbox for a custom directory
 
     // You can also require other files to run in this process
     require('./renderer.js');
@@ -108,10 +98,6 @@
       // collect all of the current form values
       let argsObj = {};
       argsObj.executeType = form.executeType.value;
-      // get the custom JSON location
-      if(document.getElementById('browseChecklistLocation').value !== 'None.') {
-        console.log('Using custom JSON checklist')
-      }
       if (form.executeType.value == 'recent') {
         // check the browse button's value!
         argsObj.searchTerm = form.searchTerm.value;
@@ -124,36 +110,29 @@
       console.log('Loading....');
       nvd.executeNVDCheck(argsObj)
         .then(() => {
+          document.getElementById('loadingMsg').textContent = 'Finalizing file structure...';
+          return nvd.wait()
+        })
+        .then(() => {
           // open the generated PDF/TXT file
           const win = new BrowserWindow({ width: 800, height: 600 });
           win.setMenu(null);
           PDFWindow.addSupport(win);
           console.log(process.cwd());
-          win.loadURL(`${process.cwd()}/output.pdf`);
+          win.loadURL(`${process.cwd()}/temp/output.pdf`);
           document.getElementById('loadingModal').style.display = 'none';
 
           win.once('ready-to-show', () => {
             win.show();
           })
+          win.on('close', () => {
+            console.log('Cleaning temporary directory...')
+            nvd.cleanTempDir();
+          })
           console.log('Done!');
         })
       // You must return false to prevent the default form behavior
       return false;
-    }
-
-    function selectChecklistFile() {
-      dialog.showOpenDialog({
-        title: "Select a Checklist File",
-        filters: [{ name: 'Checklist JSON', extensions: ['json'] },],
-        properties: ["openFiles"]
-      }, (filePath) => {
-        if (filePath === undefined) {
-          alert(`No file given! Checklist will not be used`)
-        } else {
-          console.log(filePath);
-          document.getElementById('checklistLocation').textContent = filePath;
-        }
-      });
     }
 
     // Listen for form submit
@@ -162,28 +141,6 @@
     } else {
       form.addEventListener("submit", processForm);
     }
-    form.customChecklist.onclick = function () {
-      if (form.customChecklist.checked == false) {
-        document.getElementById('browseChecklistLocation').disabled = true;
-        document.getElementById('searchTerm').disabled = false;
-      }
-      else {
-        document.getElementById('browseChecklistLocation').disabled = false;
-        document.getElementById('searchTerm').disabled = true;
-      }
-    }
-    document.getElementById('browseChecklistLocation').addEventListener('click', _ => {
-      selectChecklistFile();
-    })
-    document.getElementById("helpButton").addEventListener("click", function () {
-      alert(`Upload a JSON checklist fileto execute multiple searches\n\nExample:
-      \n[
-    {
-        "manufacturerName": "Apache",
-        "softwareName": "Apache Maven"
-    },
-]`);
-    });
   </script>
 </body>
 
