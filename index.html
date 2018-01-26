@@ -3,13 +3,13 @@
 
 <head>
   <meta charset="UTF-8">
-  <title>NVD GUI 0.0.5</title>
+  <title>NVD GUI 0.0.6</title>
   <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
 </head>
 
 <body>
   <div class="w3-container w3-teal">
-    <h1>NVD GUI 0.0.5</h1>
+    <h1>NVD GUI 0.0.6</h1>
   </div>
   <!-- All of the Node.js APIs are available in this renderer process. -->
   <form id="main" class="w3-panel w3-white w3-card-4 w3-container w3-content w3-animate-bottom	">
@@ -46,10 +46,8 @@
     <input type="text" class="w3-input" id="searchTerm" name="searchTerm" value="search_term">
     <br>
     <h4>Options:</h4>
-    <br>
-    <input type="checkbox" class="w3-check" name="customChecklist" value="Get custom checklist"> Custom checklist JSON file
-    <input type="button" name="BrowseChecklistLocation" value="Browse">
-    <br>
+    <input type="checkbox" class="w3-check" id="customChecklist" name="customChecklist"> Custom checklist JSON file
+    <input type="button" id="browseChecklistLocation" name="browseChecklistLocation" value="Browse" disabled="true">
     <br>
     <br>
     <input type="submit" value="Generate report" onclick="document.getElementById('loadingModal').style.display='block'">
@@ -91,14 +89,10 @@
     // Modify our form option hide/showing of elements depending on what's selected
     form.executeType[0].onclick = function () {
       document.getElementById("yearSelectAreaForFull").hidden = false;
-      enableChecklistOption();
     }
     form.executeType[1].onclick = function () {
       document.getElementById("yearSelectAreaForFull").hidden = true;
-      enableChecklistOption();
     }
-
-
 
     // process the form locally
     function processForm(e) {
@@ -126,7 +120,7 @@
           win.setMenu(null);
           PDFWindow.addSupport(win);
           console.log(process.cwd());
-          win.loadURL(`${process.cwd()}/test.pdf`);
+          win.loadURL(`${process.cwd()}/output.pdf`);
           document.getElementById('loadingModal').style.display = 'none';
 
           win.once('ready-to-show', () => {
@@ -145,6 +139,14 @@
       form.addEventListener("submit", processForm);
     }
 
+    form.customChecklist.onclick = function () {
+      if (form.customChecklist.checked == false) {
+        document.getElementById('browseChecklistLocation').disabled = true;
+      }
+      else {
+        document.getElementById('browseChecklistLocation').disabled = false;
+      }
+    }
   </script>
 </body>
 
