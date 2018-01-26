@@ -49,6 +49,8 @@
     <input type="checkbox" class="w3-check" id="customChecklist" name="customChecklist"> Custom checklist JSON file
     <input type="button" id="browseChecklistLocation" name="browseChecklistLocation" value="Browse" disabled="true">
     <br>
+    <br> Checklist location:
+    <div id="checklistLocation">None.</div>
     <br>
     <input type="submit" value="Generate report" onclick="document.getElementById('loadingModal').style.display='block'">
     <br>
@@ -132,13 +134,29 @@
       return false;
     }
 
+    function selectChecklistFile() {
+      dialog.showOpenDialog({
+        title: "Select a Checklist File",
+        filters: [{ name: 'Checklist JSON', extensions: ['json'] },],
+        properties: ["openFiles"]
+      }, (filePath) => {
+        if (filePath === undefined) {
+          alert(`No file given! Checklist will not be used`)
+        } else {
+          console.log(filePath);
+          document.getElementById('checklistLocation').textContent = filePath;
+        }
+      });
+    }
+
+
+
     // Listen for form submit
     if (form.attachEvent) {
       form.attachEvent("submit", processForm);
     } else {
       form.addEventListener("submit", processForm);
     }
-
     form.customChecklist.onclick = function () {
       if (form.customChecklist.checked == false) {
         document.getElementById('browseChecklistLocation').disabled = true;
@@ -147,6 +165,10 @@
         document.getElementById('browseChecklistLocation').disabled = false;
       }
     }
+    document.getElementById('browseChecklistLocation').addEventListener('click', _ => {
+      selectChecklistFile();
+
+    })
   </script>
 </body>
 
