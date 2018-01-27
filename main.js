@@ -26,7 +26,36 @@ function createWindow() {
     protocol: 'file:',
     slashes: true
   }));
-  mainWindow.setMenu(null);
+  const template = [
+    {
+      label: 'View',
+      submenu: [
+        { role: 'reload' },
+      ]
+    },
+    {
+      role: 'window',
+      submenu: [
+        { role: 'minimize' },
+        { role: 'close' }
+      ]
+    },
+    {
+      role: 'help',
+      submenu: [
+        {
+          label: 'Submit an Issue',
+          click() { require('electron').shell.openExternal('https://github.com/LilithTundrus/nvd-electron/issues') }
+        }
+      ]
+    }
+  ]
+  const menu = Menu.buildFromTemplate(template);
+  //Menu.setApplicationMenu(menu);
+  mainWindow.setMenu(menu);
+
+
+
 
   // Open the DevTools.
   // mainWindow.webContents.openDevTools()
