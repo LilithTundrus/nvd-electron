@@ -33,7 +33,7 @@ module.exports.executeNVDCheck = function (optsObj) {
 module.exports.wait = function () {
     return new Promise((resolve) => {
         setTimeout(function () {
-            console.log('Waiting for DB to be ready..')
+            console.log('Waiting for file to be ready..')
             resolve('Promise resolved!!');
         }, 2 * 1000);
     });
