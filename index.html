@@ -3,14 +3,14 @@
 
 <head>
   <meta charset="UTF-8">
-  <title>NVD GUI 0.0.6</title>
+  <title>NVD GUI 0.1.0</title>
   <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
   <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
 </head>
 
 <body>
   <div class="w3-container w3-teal">
-    <h1>NVD GUI 0.0.6</h1>
+    <h1>NVD GUI 0.1.0 Alpha</h1>
   </div>
   <!-- All of the Node.js APIs are available in this renderer process. -->
   <form id="main" class="w3-panel w3-white w3-card-4 w3-container w3-content w3-animate-bottom	">
@@ -18,7 +18,9 @@
       Welcome to the NVD GUI!
       <br>
       <br> With this App, you can search the NVD by year or recent entries that match a specific search term. (Vednor or Product
-      name) and generate a readable PDF report from the data
+      name) and generate a readable PDF report from the data.
+      <br>
+      <br> Once the new window appears, you can save the generated PDF from the menu in that window.
       <br>
     </p>
     <h4>Search Type:</h4>
@@ -73,7 +75,7 @@
 
     // You can also require other files to run in this process
     require('./renderer.js');
-    const { BrowserWindow, dialog } = require('electron').remote;
+    const { BrowserWindow, dialog, Menu, MenuItem } = require('electron').remote;
     const PDFWindow = require('electron-pdf-window');
     const nvd = require('./nvd-exports.js');
 
@@ -91,8 +93,8 @@
 
     // process the form locally
     function processForm(e) {
-      if (form.searchTerm.value == '' || form.searchTerm.value.length < 3) {
-        return alert('Please provide a search term with at least 3 characters')
+      if (form.searchTerm.value.trim() == '' || form.searchTerm.value.length < 3) {
+        return alert('Please provide a search term with at least 3 characters');
       }
       if (e.preventDefault) e.preventDefault();
       // collect all of the current form values
@@ -111,7 +113,7 @@
       nvd.executeNVDCheck(argsObj)
         .then(() => {
           document.getElementById('loadingMsg').textContent = 'Finalizing file structure...';
-          return nvd.wait()
+          return nvd.wait();
         })
         .then(() => {
           // open the generated PDF/TXT file
@@ -126,10 +128,13 @@
             win.show();
           })
           win.on('close', () => {
-            console.log('Cleaning temporary directory...')
+            console.log('Cleaning temporary directory...');
             nvd.cleanTempDir();
           })
           console.log('Done!');
+        })
+        .catch((err) => {
+          alert(`Something went wrong. Submit this error when submitting an isse if the problem persits: \n${err}`);
         })
       // You must return false to prevent the default form behavior
       return false;
